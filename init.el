@@ -16,9 +16,17 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; Initialize package manager
+(load "package")
+(package-initialize)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
 ;; Make emacs look and behave like a modern text editor
 (set-default 'cursor-type '(bar . 1))
-(fringe-mode '(4 . 0))
+(fringe-mode '(8 . 0))
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
@@ -43,6 +51,7 @@
 
 (dolist (project (directory-files vendor-dir t "\\w+"))
   (when (file-directory-p project)
+	(message "Loading vendor directory %s" project)
     (add-to-list 'load-path project)))
 
 
@@ -67,7 +76,7 @@
 ;; Some key bindings
 (global-set-key (kbd "<f12>") 'whitespace-mode)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
-
+(global-set-key (kbd "C-c h") 'helm-mini)
 
 ;; Turn on ido-mode
 (ido-mode t)
@@ -76,6 +85,11 @@
 
 (require 'powerline)
 (powerline-default-theme)
+
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(setq web-mode-engines-alist
+	  '(("underscore" . "\\.html\\'")))
 
 ;; Set color theme
 (load-theme 'base16-ocean)
