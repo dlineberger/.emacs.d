@@ -1,3 +1,5 @@
+(require 'cl)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -5,7 +7,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes t)
  '(custom-theme-directory "~/.emacs.d/vendor/color-themes")
- '(mac-command-modifier nil)
+ '(mac-command-modifier (quote super))
  '(mac-option-modifier (quote meta))
  '(send-mail-function (quote mailclient-send-it))
  '(tab-width 4))
@@ -24,11 +26,34 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
+
+;; Install packages I use in case they're not present
+(defvar my-packages '(web-mode
+					  flycheck
+					  helm
+					  less-css-mode)
+  "Default packages")
+
+(defun packages-installed-p ()
+  (loop for pkg in my-packages
+		when (not (package-installed-p pkg)) do (return nil)
+		finally (return t)))
+
+(unless (packages-installed-p)
+  (message "%s" "Refreshing package database...")
+  (package-refresh-contents)
+  (dolist (pkg my-packages)
+	(when (not (package-installed-p pkg))
+	  (package-install pkg))))
+					  
+
 ;; Make emacs look and behave like a modern text editor
+(set-default-font "-*-Consolas-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1")
 (set-default 'cursor-type '(bar . 1))
 (fringe-mode '(8 . 0))
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(delete-selection-mode t)
 
 ;; User details
 (setq user-full-name "David Lineberger"
@@ -42,8 +67,6 @@
 ;; y or n is good enough
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-
-(set-default-font "-*-Consolas-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1")
 
 ;; Add vendor directories to load-path
 (defvar vendor-dir (expand-file-name "vendor" user-emacs-directory))
@@ -77,6 +100,11 @@
 (global-set-key (kbd "<f12>") 'whitespace-mode)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 (global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "s-s") 'save-buffer)
+(global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
+(global-set-key (kbd "s-c") 'kill-ring-save)
+(global-set-key (kbd "s-v") 'yank)
+(global-set-key (kbd "s-x") 'kill-region)
 
 ;; Turn on ido-mode
 (ido-mode t)
