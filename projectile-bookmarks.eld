@@ -1,0 +1,1 @@
+("~/Projects/tecd_trunk/Android/commander/CommanderDashboard/www/" "~/Projects/tecd_trunk/Android/commander/CommanderDashboard/platforms/android/assets/www/")

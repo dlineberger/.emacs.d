@@ -31,6 +31,7 @@
 (defvar my-packages '(web-mode
 					  flycheck
 					  helm
+					  projectile					  
 					  less-css-mode)
   "Default packages")
 
