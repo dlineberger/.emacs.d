@@ -7,6 +7,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes t)
  '(custom-theme-directory "~/.emacs.d/vendor/color-themes")
+ '(grep-highlight-matches t)
  '(mac-command-modifier (quote super))
  '(mac-option-modifier (quote meta))
  '(send-mail-function (quote mailclient-send-it))
@@ -16,7 +17,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(mode-line ((t (:background "#65737e" :foreground "#dfe1e8" :box (:line-width -1 :style released-button) :height 0.85)))))
 
 ;; Initialize package manager
 (load "package")
@@ -86,6 +87,10 @@
   (interactive)
   (untabify (point-min) (point-max)))
 
+(defun tabify-buffer ()
+  (interactive)
+  (tabify (point-min) (point-max)))
+
 (defun indent-buffer ()
   (interactive)
   (indent-region (point-min) (point-max)))
@@ -93,8 +98,8 @@
 (defun cleanup-buffer ()
   "Perform a bunch of operations on the whitespace content of a buffer."
   (interactive)
+  (tabify-buffer)
   (indent-buffer)
-  (untabify-buffer)
   (delete-trailing-whitespace))
 
 ;; Some key bindings
@@ -106,6 +111,8 @@
 (global-set-key (kbd "s-c") 'kill-ring-save)
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-x") 'kill-region)
+(global-set-key (kbd "s-z") 'undo)
+(global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; Turn on ido-mode
 (ido-mode t)
@@ -114,6 +121,9 @@
 
 (require 'powerline)
 (powerline-default-theme)
+
+;; Enable Projectile
+(projectile-global-mode)
 
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
