@@ -7,11 +7,13 @@
 
 (deftheme base16-ocean)
 
-(let ((background "#2A303B")
+(let ((background "#2b303b")
+	  (not-so-dark-background "#343d46")
+	  (highlight "#4f5b66")
       (current-line "#65737e")
       (selection "#a7adba")
       (foreground "#dfe1e8")
-      (comment "#a7adba")
+      (comment "#65737e")
       (cursor "#dfe1e8")
       (red "#bf616a")
       (orange "#d08770")
@@ -21,7 +23,7 @@
       (blue "#8fa1b3")
       (purple "#b48ead"))
 
-  (custom-theme-set-faces 
+  (custom-theme-set-faces
    'base16-ocean
 
    ;; Built-in stuff (Emacs 23)
@@ -30,6 +32,18 @@
    `(minibuffer-prompt ((t (:foreground ,blue))))
    `(mode-line ((t (:background ,current-line :foreground ,foreground))))
    `(region ((t (:background ,selection))))
+   `(highlight ((t (:background, highlight))))
+
+   ;; web-mode
+   `(web-mode-current-element-highlight-face ((t (:background ,highlight))))
+   `(web-mode-html-tag-face ((t (:foreground ,purple))))
+   `(web-mode-html-attr-name-face ((t (:foreground ,blue))))
+   `(web-mode-html-attr-equal-face ((t (:foreground ,foreground))))
+   `(web-mode-variable-name-face ((t (:foreground ,orange))))
+
+   ;; diff
+   `(diff-removed ((t (:foreground, red :background, not-so-dark-background))))
+   `(diff-added ((t (:foreground, green :background, not-so-dark-background))))
 
    ;; Font-lock stuff
    `(font-lock-comment-face ((t (:foreground ,comment))))
@@ -74,11 +88,11 @@
    'base16-ocean
 
    `(ansi-color-names-vector
-     ;; black, red, green, yellow, blue, magenta, cyan, white
-     [,background ,red ,green ,yellow ,blue ,purple ,blue ,foreground])
+	 ;; black, red, green, yellow, blue, magenta, cyan, white
+	 [,background ,red ,green ,yellow ,blue ,purple ,blue ,foreground])
    `(ansi-term-color-vector
-     ;; black, red, green, yellow, blue, magenta, cyan, white
-     [unspecified ,background ,red ,green ,yellow ,blue ,purple ,blue ,foreground])))
+	 ;; black, red, green, yellow, blue, magenta, cyan, white
+	 [unspecified ,background ,red ,green ,yellow ,blue ,purple ,blue ,foreground])))
 
 (provide-theme 'base16-ocean)
 

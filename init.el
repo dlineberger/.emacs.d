@@ -8,6 +8,7 @@
  '(custom-safe-themes t)
  '(custom-theme-directory "~/.emacs.d/vendor/color-themes")
  '(grep-highlight-matches t)
+ '(jabber-account-list (quote (("dlineberger@ringtaildesign.com" (:network-server . "talk.google.com") (:port . 5223) (:connection-type . ssl)))))
  '(mac-command-modifier (quote super))
  '(mac-option-modifier (quote meta))
  '(send-mail-function (quote mailclient-send-it))
@@ -50,7 +51,7 @@
 					  
 
 ;; Make emacs look and behave like a modern text editor
-(set-default-font "-*-Consolas-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+;;(set-default-font "-*-Consolas-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1")
 (set-default 'cursor-type '(bar . 1))
 (fringe-mode '(8 . 0))
 (tool-bar-mode -1)
@@ -98,7 +99,7 @@
 (defun cleanup-buffer ()
   "Perform a bunch of operations on the whitespace content of a buffer."
   (interactive)
-  (tabify-buffer)
+  (untabify-buffer)
   (indent-buffer)
   (delete-trailing-whitespace))
 
@@ -124,11 +125,14 @@
 
 ;; Enable Projectile
 (projectile-global-mode)
+(setq projectile-completion-system 'grizzl)
 
+;; Web Mode is awesome
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (setq web-mode-engines-alist
-	  '(("underscore" . "\\.html\\'")))
+	  '(("angular" . "\\.html\\'")))
+(setq web-mode-enable-current-element-highlight t)
 
 ;; Set color theme
 (load-theme 'base16-ocean)
