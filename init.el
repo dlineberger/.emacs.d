@@ -9,10 +9,13 @@
  '(custom-theme-directory "~/.emacs.d/vendor/color-themes")
  '(grep-highlight-matches t)
  '(jabber-account-list (quote (("dlineberger@ringtaildesign.com" (:network-server . "talk.google.com") (:port . 5223) (:connection-type . ssl)))))
+ '(jabber-auto-reconnect t)
  '(mac-command-modifier (quote super))
  '(mac-option-modifier (quote meta))
  '(send-mail-function (quote mailclient-send-it))
- '(tab-width 4))
+ '(show-paren-mode t)
+ '(tab-width 4)
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -113,6 +116,7 @@
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-x") 'kill-region)
 (global-set-key (kbd "s-z") 'undo)
+(global-set-key (kbd "s-w") 'kill-this-buffer)
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; Turn on ido-mode
@@ -130,6 +134,7 @@
 ;; Web Mode is awesome
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
 (setq web-mode-engines-alist
 	  '(("angular" . "\\.html\\'")))
 (setq web-mode-enable-current-element-highlight t)

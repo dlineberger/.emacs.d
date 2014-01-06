@@ -31,7 +31,7 @@
    `(fringe ((t (:background , not-so-dark-background))))
    `(minibuffer-prompt ((t (:foreground ,blue))))
    `(mode-line ((t (:background ,current-line :foreground ,foreground))))
-   `(region ((t (:background ,current-line))))
+   `(region ((t (:inverse-video t))))
    `(highlight ((t (:background, highlight))))
    `(button ((t (:foreground ,yellow :underline, t))))
 
@@ -73,6 +73,15 @@
    `(term-color-cyan ((t (:foreground ,blue))))
    `(term-color-white ((t (:foreground ,foreground))))
 
+   ;; jabber
+   `(jabber-roster-user-online ((t (:foreground ,green))))
+   `(jabber-roster-user-away ((t (:foreground ,selection))))
+   `(jabber-roster-user-xa ((t (:foreground ,orange))))
+   `(jabber-roster-user-offline ((t (:foreground ,red))))
+   `(jabber-chat-prompt-foreign ((t (:foreground ,red))))
+   `(jabber-chat-prompt-local ((t (:foreground ,blue))))
+   `(jabber-rare-time-face ((t (:foreground ,green))))
+	  
    ;; hl-line-mode
    `(hl-line ((t (:background ,current-line))))
 
