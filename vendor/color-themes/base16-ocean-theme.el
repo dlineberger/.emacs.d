@@ -8,8 +8,8 @@
 (deftheme base16-ocean)
 
 (let ((background "#2b303b")
-	  (not-so-dark-background "#343d46")
-	  (highlight "#4f5b66")
+      (not-so-dark-background "#343d46")
+      (highlight "#4f5b66")
       (current-line "#65737e")
       (selection "#a7adba")
       (foreground "#dfe1e8")
@@ -28,11 +28,12 @@
 
    ;; Built-in stuff (Emacs 23)
    `(default ((t (:background ,background :foreground ,foreground))))
-   `(fringe ((t (:background ,current-line))))
+   `(fringe ((t (:background , not-so-dark-background))))
    `(minibuffer-prompt ((t (:foreground ,blue))))
    `(mode-line ((t (:background ,current-line :foreground ,foreground))))
-   `(region ((t (:background ,selection))))
+   `(region ((t (:background ,current-line))))
    `(highlight ((t (:background, highlight))))
+   `(button ((t (:foreground ,yellow :underline, t))))
 
    ;; web-mode
    `(web-mode-current-element-highlight-face ((t (:background ,highlight))))
@@ -40,10 +41,16 @@
    `(web-mode-html-attr-name-face ((t (:foreground ,blue))))
    `(web-mode-html-attr-equal-face ((t (:foreground ,foreground))))
    `(web-mode-variable-name-face ((t (:foreground ,orange))))
+   `(web-mode-preprocessor-face ((t (:foreground ,orange))))
 
    ;; diff
    `(diff-removed ((t (:foreground, red :background, not-so-dark-background))))
    `(diff-added ((t (:foreground, green :background, not-so-dark-background))))
+
+   ;; ido-mode
+   `(ido-subdir ((t (:foreground, red))))
+   `(ido-first-match ((t (:foreground, yellow))))
+   `(ido-only-match ((t (:foreground, green))))
 
    ;; Font-lock stuff
    `(font-lock-comment-face ((t (:foreground ,comment))))
@@ -55,6 +62,16 @@
    `(font-lock-type-face ((t (:foreground ,yellow))))
    `(font-lock-variable-name-face ((t (:foreground ,red))))
    `(font-lock-warning-face ((t (:foreground ,red))))
+
+   ;; ansi-term
+   `(term-color-black ((t (:foreground ,background))))
+   `(term-color-red ((t (:foreground ,red))))
+   `(term-color-green ((t (:foreground ,green))))
+   `(term-color-yellow ((t (:foreground ,yellow))))
+   `(term-color-blue ((t (:foreground ,blue))))
+   `(term-color-purple ((t (:foreground ,purple))))
+   `(term-color-cyan ((t (:foreground ,blue))))
+   `(term-color-white ((t (:foreground ,foreground))))
 
    ;; hl-line-mode
    `(hl-line ((t (:background ,current-line))))
@@ -88,12 +105,11 @@
    'base16-ocean
 
    `(ansi-color-names-vector
-	 ;; black, red, green, yellow, blue, magenta, cyan, white
-	 [,background ,red ,green ,yellow ,blue ,purple ,blue ,foreground])
-   `(ansi-term-color-vector
-	 ;; black, red, green, yellow, blue, magenta, cyan, white
-	 [unspecified ,background ,red ,green ,yellow ,blue ,purple ,blue ,foreground])))
+     ;; black, red, green, yellow, blue, magenta, cyan, white
+     [background ,red ,green ,yellow ,blue ,purple ,blue ,foreground])
 
+   ))
+  
 (provide-theme 'base16-ocean)
 
 ;;; base16-ocean-theme.el ends here
