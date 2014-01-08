@@ -1,27 +1,7 @@
 (require 'cl)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes t)
- '(custom-theme-directory "~/.emacs.d/vendor/color-themes")
- '(grep-highlight-matches t)
- '(jabber-account-list (quote (("dlineberger@ringtaildesign.com" (:network-server . "talk.google.com") (:port . 5223) (:connection-type . ssl)))))
- '(jabber-auto-reconnect t)
- '(mac-command-modifier (quote super))
- '(mac-option-modifier (quote meta))
- '(send-mail-function (quote mailclient-send-it))
- '(show-paren-mode t)
- '(tab-width 4)
- '(tool-bar-mode nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line ((t (:background "#65737e" :foreground "#dfe1e8" :box (:line-width -1 :style released-button) :height 0.85)))))
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
 
 ;; Initialize package manager
 (load "package")
@@ -30,7 +10,6 @@
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
-
 
 ;; Install packages I use in case they're not present
 (defvar my-packages '(web-mode
@@ -60,10 +39,6 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (delete-selection-mode t)
-
-;; User details
-(setq user-full-name "David Lineberger"
-	  user-mail-address "dlineberger@gmail.com")
 
 (setq inhibit-splash-screen t
       initial-scratch-message nil
@@ -121,15 +96,12 @@
 
 ;; Turn on ido-mode
 (ido-mode t)
-(setq ido-enable-flex-matching t
-	  ido-use-virtual-buffers t)
 
 (require 'powerline)
 (powerline-default-theme)
 
 ;; Enable Projectile
 (projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
 
 ;; Web Mode is awesome
 (require 'web-mode)
@@ -137,7 +109,6 @@
 (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
 (setq web-mode-engines-alist
 	  '(("angular" . "\\.html\\'")))
-(setq web-mode-enable-current-element-highlight t)
 
 ;; Set color theme
 (load-theme 'base16-ocean)
