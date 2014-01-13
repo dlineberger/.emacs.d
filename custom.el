@@ -20,10 +20,12 @@
  '(tool-bar-mode nil)
  '(user-full-name "David Lineberger")
  '(user-mail-address "dlineberger@gmail.com")
- '(web-mode-enable-current-element-highlight t))
+ '(web-mode-enable-current-element-highlight t)
+ '(web-mode-markup-indent-offset 4)
+ '(whitespace-style (quote (face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(mode-line ((t (:background "#65737e" :foreground "#dfe1e8" :box (:line-width -1 :style released-button) :height 0.85)))))
+ '(web-mode-current-element-highlight-face ((t (:inherit highlight)))))

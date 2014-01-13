@@ -97,9 +97,6 @@
 ;; Turn on ido-mode
 (ido-mode t)
 
-(require 'powerline)
-(powerline-default-theme)
-
 ;; Enable Projectile
 (projectile-global-mode)
 
@@ -111,4 +108,4 @@
 	  '(("angular" . "\\.html\\'")))
 
 ;; Set color theme
-(load-theme 'base16-ocean)
+(load-theme 'solarized-light)
