@@ -7,15 +7,23 @@
 (load "package")
 (package-initialize)
 (add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
+			 '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 ;; Install packages I use in case they're not present
 (defvar my-packages '(web-mode
+					  ace-jump-mode
+					  grizzl
 					  flycheck
 					  helm
-					  projectile					  
+					  projectile
+					  helm-projectile
+					  markdown-mode
+					  twittering-mode
+					  js2-mode
+					  jabber
+					  magit
 					  less-css-mode)
   "Default packages")
 
@@ -30,7 +38,7 @@
   (dolist (pkg my-packages)
 	(when (not (package-installed-p pkg))
 	  (package-install pkg))))
-					  
+
 
 ;; Make emacs look and behave like a modern text editor
 ;;(set-default-font "-*-Consolas-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1")
@@ -39,13 +47,15 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (delete-selection-mode t)
+(setq linum-format " %4d ")
+(global-visual-line-mode t)
 (electric-indent-mode t)
 (electric-pair-mode t)
 
 (setq inhibit-splash-screen t
-      initial-scratch-message nil
-      make-backup-files nil
-      frame-title-format '(buffer-file-name "%f" ("%b")))
+	  initial-scratch-message nil
+	  make-backup-files nil
+	  frame-title-format '(buffer-file-name "%f" ("%b")))
 
 ;; y or n is good enough
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -58,7 +68,7 @@
 (dolist (project (directory-files vendor-dir t "\\w+"))
   (when (file-directory-p project)
 	(message "Loading vendor directory %s" project)
-    (add-to-list 'load-path project)))
+	(add-to-list 'load-path project)))
 
 
 ;; Highlight matching parentheses
@@ -79,9 +89,9 @@
 (defun cleanup-buffer ()
   "Perform a bunch of operations on the whitespace content of a buffer."
   (interactive)
+  (delete-trailing-whitespace)
   (tabify-buffer)
-  (indent-buffer)
-  (delete-trailing-whitespace))
+  (indent-buffer))
 
 (require 'ace-jump-mode)
 (require 'mu4e)
