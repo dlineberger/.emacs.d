@@ -39,6 +39,8 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (delete-selection-mode t)
+(electric-indent-mode t)
+(electric-pair-mode t)
 
 (setq inhibit-splash-screen t
       initial-scratch-message nil
@@ -77,14 +79,18 @@
 (defun cleanup-buffer ()
   "Perform a bunch of operations on the whitespace content of a buffer."
   (interactive)
-  (untabify-buffer)
+  (tabify-buffer)
   (indent-buffer)
   (delete-trailing-whitespace))
+
+(require 'ace-jump-mode)
+(require 'mu4e)
 
 ;; Some key bindings
 (global-set-key (kbd "<f12>") 'whitespace-mode)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 (global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "C-c SPC") 'ace-jump-mode)
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-c") 'kill-ring-save)
@@ -107,5 +113,9 @@
 (setq web-mode-engines-alist
 	  '(("angular" . "\\.html\\'")))
 
+
+(setq twittering-status-format "%i %S @%s\n%FILL[ ]{%T}\n %FACE[glyphless-char]{%@ from %f%L%r%R}\n\n")
+
 ;; Set color theme
-(load-theme 'solarized-light)
+(if window-system
+	(load-theme 'solarized-light))
