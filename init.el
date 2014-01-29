@@ -18,6 +18,7 @@
 					  flycheck
 					  helm
 					  projectile
+					  solarized-theme
 					  helm-projectile
 					  markdown-mode
 					  twittering-mode
@@ -95,6 +96,7 @@
 
 (require 'ace-jump-mode)
 (require 'mu4e)
+(require 'uniquify)
 
 ;; Some key bindings
 (global-set-key (kbd "<f12>") 'whitespace-mode)
@@ -122,6 +124,10 @@
 (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
 (setq web-mode-engines-alist
 	  '(("angular" . "\\.html\\'")))
+
+(add-hook 'prog-mode-hook (lambda()
+							(linum-mode)
+							(subword-mode)))
 
 
 (setq twittering-status-format "%i %S @%s\n%FILL[ ]{%T}\n %FACE[glyphless-char]{%@ from %f%L%r%R}\n\n")
