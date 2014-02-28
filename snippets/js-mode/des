@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#name: mocha describe section
+# --
+describe("$1", function() {
+	$0
+});

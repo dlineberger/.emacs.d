@@ -18,13 +18,13 @@
 					  flycheck
 					  helm
 					  projectile
-					  solarized-theme
 					  helm-projectile
 					  markdown-mode
 					  twittering-mode
 					  js2-mode
 					  jabber
 					  magit
+					  yasnippet
 					  less-css-mode)
   "Default packages")
 
@@ -42,7 +42,7 @@
 
 
 ;; Make emacs look and behave like a modern text editor
-;;(set-default-font "-*-Consolas-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+(set-default-font "-*-Menlo-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1")
 (set-default 'cursor-type '(bar . 1))
 (fringe-mode '(8 . 0))
 (tool-bar-mode -1)
@@ -95,13 +95,14 @@
   (indent-buffer))
 
 (require 'ace-jump-mode)
-(require 'mu4e)
+;(require 'mu4e)
 (require 'uniquify)
 
 ;; Some key bindings
-(global-set-key (kbd "<f12>") 'whitespace-mode)
+(global-set-key (kbd "C-c w") 'whitespace-mode)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 (global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "C-c m") 'magit-status)
 (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
@@ -122,16 +123,30 @@
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
-(setq web-mode-engines-alist
-	  '(("angular" . "\\.html\\'")))
+;(setq web-mode-engines-alist			
+;	  '(("angular" . "\\.html\\'")))
 
 (add-hook 'prog-mode-hook (lambda()
+							(yas-minor-mode)
 							(linum-mode)
+							(rainbow-mode)
 							(subword-mode)))
 
+(add-hook 'css-mode-hook 'linum-mode)
+
+;; save backup files to temporary directory
+(setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
 
 (setq twittering-status-format "%i %S @%s\n%FILL[ ]{%T}\n %FACE[glyphless-char]{%@ from %f%L%r%R}\n\n")
 
 ;; Set color theme
-(if window-system
-	(load-theme 'solarized-light))
+(when window-system
+  (load-theme 'base16-ocean))
+
+
+
+
+

@@ -11,7 +11,7 @@
       (not-so-dark-background "#343d46")
       (highlight "#4f5b66")
       (current-line "#65737e")
-      (selection "#a7adba")
+      (selection "#5D81B1")
       (foreground "#dfe1e8")
       (comment "#65737e")
       (cursor "#dfe1e8")
@@ -28,10 +28,10 @@
 
    ;; Built-in stuff (Emacs 23)
    `(default ((t (:background ,background :foreground ,foreground))))
-   `(fringe ((t (:background , not-so-dark-background))))
+   `(fringe ((t (:background , background))))
    `(minibuffer-prompt ((t (:foreground ,blue))))
    `(mode-line ((t (:background ,current-line :foreground ,foreground))))
-   `(region ((t (:inverse-video t))))
+   `(region ((t (:background ,selection))))
    `(highlight ((t (:background, highlight))))
    `(button ((t (:foreground ,yellow :underline, t))))
 
@@ -86,7 +86,7 @@
    `(hl-line ((t (:background ,current-line))))
 
    ;; linum-mode
-   `(linum ((t (:background ,current-line :foreground ,foreground))))
+   `(linum ((t (:background ,not-so-dark-background :foreground ,foreground))))
 
    ;; org-mode
    `(org-date ((t (:foreground ,purple))))
