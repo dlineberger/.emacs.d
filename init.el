@@ -109,6 +109,8 @@
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 (global-set-key (kbd "C-c h") 'helm-mini)
 (global-set-key (kbd "C-c m") 'magit-status)
+(global-set-key (kbd "C-c f") 'reveal-in-finder)
+(global-set-key (kbd "C-h d") 'dash-at-point)
 (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
@@ -154,8 +156,3 @@
 ;; Set color theme
 (when window-system
   (load-theme 'base16-ocean))
-
-
-
-
-
