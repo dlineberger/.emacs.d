@@ -71,6 +71,12 @@
 	(message "Loading vendor directory %s" project)
 	(add-to-list 'load-path project)))
 
+;; store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
 
 ;; Highlight matching parentheses
 (show-paren-mode t)
@@ -112,12 +118,16 @@
 (global-set-key (kbd "s-z") 'undo)
 (global-set-key (kbd "s-w") 'kill-this-buffer)
 (global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "M-x") 'smex)
 
 ;; Turn on ido-mode
 (ido-mode t)
 
 ;; Enable Projectile
 (projectile-global-mode)
+
+;; Enable snippets
+(yas-global-mode)
 
 ;; Web Mode is awesome
 (require 'web-mode)
@@ -127,7 +137,6 @@
 ;	  '(("angular" . "\\.html\\'")))
 
 (add-hook 'prog-mode-hook (lambda()
-							(yas-minor-mode)
 							(linum-mode)
 							(rainbow-mode)
 							(subword-mode)))
