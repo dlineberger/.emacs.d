@@ -24,7 +24,9 @@
 					  js2-mode
 					  jabber
 					  magit
+					  smex
 					  yasnippet
+					  rainbow-mode
 					  less-css-mode)
   "Default packages")
 
