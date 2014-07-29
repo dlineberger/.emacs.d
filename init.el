@@ -153,6 +153,9 @@
 
 (setq twittering-status-format "%i %S @%s\n%FILL[ ]{%T}\n %FACE[glyphless-char]{%@ from %f%L%r%R}\n\n")
 
+;; prevent lockfile creation (those nasty .# files that screw up Grunt)
+(setq create-lockfiles nil)
+
 ;; Set color theme
 (when window-system
   (load-theme 'base16-ocean))
