@@ -18,6 +18,7 @@
 					  flycheck
 					  helm
 					  projectile
+					  page-break-lines
 					  helm-projectile
 					  markdown-mode
 					  twittering-mode

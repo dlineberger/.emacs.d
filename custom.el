@@ -6,6 +6,7 @@
  '(custom-safe-themes t)
  '(custom-theme-directory "~/.emacs.d/vendor/color-themes")
  '(global-auto-revert-mode t)
+ '(global-page-break-lines-mode t)
  '(grep-command "ggrep")
  '(grep-highlight-matches t)
  '(helm-locate-command "mdfind %s %s")
