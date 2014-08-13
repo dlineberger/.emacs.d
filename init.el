@@ -158,6 +158,14 @@
 ;; prevent lockfile creation (those nasty .# files that screw up Grunt)
 (setq create-lockfiles nil)
 
+;; Allow ANSI characters in compilation buffer
+(ignore-errors
+  (require 'ansi-color)
+  (defun my-colorize-compilation-buffer ()
+    (when (eq major-mode 'compilation-mode)
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
+  (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
+
 ;; Set color theme
 (when window-system
   (load-theme 'base16-ocean))
