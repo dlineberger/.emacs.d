@@ -25,6 +25,7 @@
 					  jabber
 					  magit
 					  smex
+					  sass-mode
 					  yasnippet
 					  rainbow-mode
 					  less-css-mode)
@@ -103,7 +104,6 @@
   (indent-buffer))
 
 (require 'ace-jump-mode)
-;(require 'mu4e)
 (require 'uniquify)
 
 ;; Some key bindings
@@ -132,6 +132,10 @@
 
 ;; Enable snippets
 (yas-global-mode)
+
+;; Auto refresh buffers
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t)
 
 ;; Web Mode is awesome
 (require 'web-mode)
