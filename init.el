@@ -173,4 +173,4 @@
 
 ;; Set color theme
 (when window-system
-  (load-theme 'base16-ocean))
+  (load-theme 'sanityinc-tomorrow-night))
