@@ -29,6 +29,7 @@
 					  sass-mode
 					  yasnippet
 					  rainbow-mode
+					  color-theme-sanityinc-tomorrow
 					  less-css-mode)
   "Default packages")
 
