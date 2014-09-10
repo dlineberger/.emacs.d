@@ -131,6 +131,9 @@
 ;; Enable Projectile
 (projectile-global-mode)
 
+;; Pretty-print ^L characters
+(global-page-break-lines-mode t)
+
 ;; Enable snippets
 (yas-global-mode)
 
