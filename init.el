@@ -12,25 +12,23 @@
 			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 ;; Install packages I use in case they're not present
-(defvar my-packages '(web-mode
-					  ace-jump-mode
-					  grizzl
+(defvar my-packages '(ace-jump-mode
+					  color-theme-sanityinc-tomorrow
 					  flycheck
 					  helm
-					  projectile
-					  page-break-lines
 					  helm-projectile
-					  markdown-mode
-					  twittering-mode
 					  js2-mode
-					  jabber
+					  less-css-mode
 					  magit
-					  smex
-					  sass-mode
-					  yasnippet
+					  markdown-mode
+					  org
+					  page-break-lines
+					  projectile
 					  rainbow-mode
-					  color-theme-sanityinc-tomorrow
-					  less-css-mode)
+					  sass-mode
+					  smex
+					  web-mode
+					  yasnippet)
   "Default packages")
 
 (defun packages-installed-p ()
@@ -174,6 +172,20 @@
     (when (eq major-mode 'compilation-mode)
       (ansi-color-apply-on-region compilation-filter-start (point-max))))
   (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
+
+;; Javascript REPL
+(require 'js-comint) 
+(setq inferior-js-program-command "node")
+(setq inferior-js-mode-hook
+      (lambda ()
+        ;; We like nice colors
+        (ansi-color-for-comint-mode-on)
+        ;; Deal with some prompt nonsense
+        (add-to-list
+         'comint-preoutput-filter-functions
+         (lambda (output)
+           (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
+
 
 ;; Set color theme
 (when window-system
