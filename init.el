@@ -25,7 +25,7 @@
 					  page-break-lines
 					  projectile
 					  rainbow-mode
-					  sass-mode
+					  scss-mode
 					  smex
 					  web-mode
 					  yasnippet)
@@ -50,6 +50,9 @@
 (fringe-mode '(8 . 0))
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(setq auto-window-vscroll nil)
+(setq scroll-step 1)
+(setq scroll-conservatively 10000)
 (delete-selection-mode t)
 (setq linum-format " %4d ")
 (global-visual-line-mode t)
@@ -174,17 +177,17 @@
   (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
 
 ;; Javascript REPL
-(require 'js-comint) 
-(setq inferior-js-program-command "node")
-(setq inferior-js-mode-hook
-      (lambda ()
-        ;; We like nice colors
-        (ansi-color-for-comint-mode-on)
-        ;; Deal with some prompt nonsense
-        (add-to-list
-         'comint-preoutput-filter-functions
-         (lambda (output)
-           (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
+;; (require 'js-comint) 
+;; (setq inferior-js-program-command "node")
+;; (setq inferior-js-mode-hook
+;;       (lambda ()
+;;         ;; We like nice colors
+;;         (ansi-color-for-comint-mode-on)
+;;         ;; Deal with some prompt nonsense
+;;         (add-to-list
+;;          'comint-preoutput-filter-functions
+;;          (lambda (output)
+;;            (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
 
 
 ;; Set color theme
