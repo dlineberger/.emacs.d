@@ -7,41 +7,42 @@
 (load "package")
 (package-initialize)
 (add-to-list 'package-archives
-			 '("marmalade" . "http://marmalade-repo.org/packages/"))
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
-			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 ;; Install packages I use in case they're not present
 (defvar my-packages '(ace-jump-mode
-					  color-theme-sanityinc-tomorrow
-					  flycheck
-					  helm
-					  helm-projectile
-					  js2-mode
-					  less-css-mode
-					  magit
-					  markdown-mode
-					  org
-					  page-break-lines
-					  projectile
-					  rainbow-mode
-					  scss-mode
-					  smex
-					  web-mode
-					  yasnippet)
+                      color-theme-sanityinc-tomorrow
+                      flycheck
+                      helm
+                      helm-projectile
+                      js2-mode
+                      less-css-mode
+                      magit
+                      markdown-mode
+                      org
+                      page-break-lines
+                      projectile
+                      rainbow-mode
+                      scss-mode
+                      smex
+                      web-mode
+                      coffee-mode
+                      yasnippet)
   "Default packages")
 
 (defun packages-installed-p ()
   (loop for pkg in my-packages
-		when (not (package-installed-p pkg)) do (return nil)
-		finally (return t)))
+        when (not (package-installed-p pkg)) do (return nil)
+        finally (return t)))
 
 (unless (packages-installed-p)
   (message "%s" "Refreshing package database...")
   (package-refresh-contents)
   (dolist (pkg my-packages)
-	(when (not (package-installed-p pkg))
-	  (package-install pkg))))
+    (when (not (package-installed-p pkg))
+      (package-install pkg))))
 
 
 ;; Make emacs look and behave like a modern text editor
@@ -60,9 +61,9 @@
 (electric-pair-mode t)
 
 (setq inhibit-splash-screen t
-	  initial-scratch-message nil
-	  make-backup-files nil
-	  frame-title-format '(buffer-file-name "%f" ("%b")))
+      initial-scratch-message nil
+      make-backup-files nil
+      frame-title-format '(buffer-file-name "%f" ("%b")))
 
 ;; y or n is good enough
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -74,8 +75,8 @@
 
 (dolist (project (directory-files vendor-dir t "\\w+"))
   (when (file-directory-p project)
-	(message "Loading vendor directory %s" project)
-	(add-to-list 'load-path project)))
+    (message "Loading vendor directory %s" project)
+    (add-to-list 'load-path project)))
 
 ;; store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
@@ -103,7 +104,7 @@
   "Perform a bunch of operations on the whitespace content of a buffer."
   (interactive)
   (delete-trailing-whitespace)
-  (tabify-buffer)
+  (untabify-buffer)
   (indent-buffer))
 
 (require 'ace-jump-mode)
@@ -147,21 +148,23 @@
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
-;(setq web-mode-engines-alist			
-;	  '(("angular" . "\\.html\\'")))
+(add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
+
+                                        ;(setq web-mode-engines-alist
+                                        ;   '(("angular" . "\\.html\\'")))
 
 (add-hook 'prog-mode-hook (lambda()
-							(linum-mode)
-							(rainbow-mode)
-							(subword-mode)))
+                            (linum-mode)
+                            (rainbow-mode)
+                            (subword-mode)))
 
 (add-hook 'css-mode-hook 'linum-mode)
 
 ;; save backup files to temporary directory
 (setq backup-directory-alist
-          `((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms
-          `((".*" ,temporary-file-directory t)))
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 (setq twittering-status-format "%i %S @%s\n%FILL[ ]{%T}\n %FACE[glyphless-char]{%@ from %f%L%r%R}\n\n")
 
@@ -177,7 +180,7 @@
   (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
 
 ;; Javascript REPL
-;; (require 'js-comint) 
+;; (require 'js-comint)
 ;; (setq inferior-js-program-command "node")
 ;; (setq inferior-js-mode-hook
 ;;       (lambda ()

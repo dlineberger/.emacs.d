@@ -12,43 +12,34 @@
  '(ido-auto-merge-work-directories-length -1)
  '(ido-enable-flex-matching t)
  '(ido-use-virtual-buffers t)
- '(jabber-account-list
-   (quote
-	(("dlineberger@ringtaildesign.com"
-	  (:network-server . "talk.google.com")
-	  (:port . 5223)
-	  (:connection-type . ssl)))))
+ '(indent-tabs-mode nil)
  '(jabber-auto-reconnect t)
+ '(js2-basic-offset 2)
  '(line-spacing 2)
  '(locate-command "mdfind")
- '(mu4e-confirm-quit nil)
- '(mu4e-headers-skip-duplicates t)
- '(mu4e-html2text-command "w3m -dump -T text/html")
- '(mu4e-maildir "/Users/davidlineberger/.mail/dlineberger-gmail.com")
- '(mu4e-view-prefer-html nil)
- '(mu4e-view-show-images t)
+ '(mac-command-modifier (quote super))
+ '(mac-option-modifier (quote meta))
  '(ns-alternate-modifier (quote meta))
  '(ns-command-modifier (quote super))
  '(org-agenda-files (quote ("~/Dropbox/Documents/org/agenda")))
  '(org-blank-before-new-entry nil)
  '(org-directory "~/Dropbox/Documents/org")
  '(org-insert-heading-respect-content t)
- '(projectile-completion-system (quote grizzl))
  '(rainbow-ansi-colors nil)
  '(rainbow-html-colors nil)
  '(rainbow-x-colors nil)
  '(safe-local-variable-values
    (quote
-	((eval progn
-		   (require
-			(quote projectile))
-		   (puthash
-			(projectile-project-root)
-			"npm verify" projectile-compilation-cmd-map)))))
+    ((eval progn
+           (require
+            (quote projectile))
+           (puthash
+            (projectile-project-root)
+            "npm verify" projectile-compilation-cmd-map)))))
  '(scss-compile-at-save t)
  '(send-mail-function (quote mailclient-send-it))
  '(show-paren-mode t)
- '(tab-width 4)
+ '(tab-width 2)
  '(tool-bar-mode nil)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
  '(user-full-name "David Lineberger")
@@ -58,7 +49,7 @@
  '(web-mode-markup-indent-offset 4)
  '(whitespace-style
    (quote
-	(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
+    (face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
