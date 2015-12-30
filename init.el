@@ -107,6 +107,21 @@
   (untabify-buffer)
   (indent-buffer))
 
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
+
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
+
 (require 'ace-jump-mode)
 (require 'uniquify)
 
@@ -119,14 +134,16 @@
 (global-set-key (kbd "C-h d") 'dash-at-point)
 (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
 (global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
+;(global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-c") 'kill-ring-save)
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-x") 'kill-region)
 (global-set-key (kbd "s-z") 'undo)
-(global-set-key (kbd "s-w") 'kill-this-buffer)
+;(global-set-key (kbd "s-w") 'kill-this-buffer)
 (global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key (kbd "M-x") 'smex)
+(global-set-key [(meta shift up)]  'move-line-up)
+(global-set-key [(meta shift down)]  'move-line-down)
 
 ;; Turn on ido-mode
 (ido-mode t)
@@ -149,16 +166,18 @@
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
-
-                                        ;(setq web-mode-engines-alist
-                                        ;   '(("angular" . "\\.html\\'")))
+(add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.sass\\'" . scss-mode))
 
 (add-hook 'prog-mode-hook (lambda()
                             (linum-mode)
                             (rainbow-mode)
                             (subword-mode)))
 
-(add-hook 'css-mode-hook 'linum-mode)
+(add-hook 'css-mode-hook (lambda()
+                           (linum-mode)
+                           (rainbow-mode)))
 
 ;; save backup files to temporary directory
 (setq backup-directory-alist
@@ -196,3 +215,7 @@
 ;; Set color theme
 (when window-system
   (load-theme 'sanityinc-tomorrow-night))
+
+;; Zignal Labs Section
+(setq org-link-abbrev-alist
+      '(("jira" . "https://politear.atlassian.net/browse/")))
