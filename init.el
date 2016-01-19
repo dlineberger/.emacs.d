@@ -13,7 +13,7 @@
 
 ;; Install packages I use in case they're not present
 (defvar my-packages '(ace-jump-mode
-                      color-theme-sanityinc-tomorrow
+                      zenburn-theme
                       flycheck
                       helm
                       helm-projectile
@@ -57,8 +57,10 @@
 (delete-selection-mode t)
 (setq linum-format " %4d ")
 (global-visual-line-mode t)
+(global-hl-line-mode t)
 (electric-indent-mode t)
 (electric-pair-mode t)
+(blink-cursor-mode 0)
 
 (setq inhibit-splash-screen t
       initial-scratch-message nil
@@ -129,17 +131,16 @@
 (global-set-key (kbd "C-c w") 'whitespace-mode)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 (global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "C-c l") 'linum-mode)
 (global-set-key (kbd "C-c m") 'magit-status)
 (global-set-key (kbd "C-c f") 'reveal-in-finder)
 (global-set-key (kbd "C-h d") 'dash-at-point)
 (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
 (global-set-key (kbd "s-s") 'save-buffer)
-;(global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-c") 'kill-ring-save)
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-x") 'kill-region)
 (global-set-key (kbd "s-z") 'undo)
-;(global-set-key (kbd "s-w") 'kill-this-buffer)
 (global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key [(meta shift up)]  'move-line-up)
@@ -157,6 +158,9 @@
 ;; Enable snippets
 (yas-global-mode)
 
+;; Show Git diff in fringe
+(global-diff-hl-mode t)
+
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t)
@@ -171,12 +175,11 @@
 (add-to-list 'auto-mode-alist '("\\.sass\\'" . scss-mode))
 
 (add-hook 'prog-mode-hook (lambda()
-                            (linum-mode)
+                            (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace))
                             (rainbow-mode)
                             (subword-mode)))
 
 (add-hook 'css-mode-hook (lambda()
-                           (linum-mode)
                            (rainbow-mode)))
 
 ;; save backup files to temporary directory
@@ -213,8 +216,7 @@
 
 
 ;; Set color theme
-(when window-system
-  (load-theme 'sanityinc-tomorrow-night))
+(load-theme 'zenburn)
 
 ;; Zignal Labs Section
 (setq org-link-abbrev-alist
