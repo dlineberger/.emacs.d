@@ -45,15 +45,18 @@
       (package-install pkg))))
 
 
+
+;; Set default font to Monaco 10.
+;; This looks best when disabling anti-aliasing by running the following command:
+;; defaults write org.gnu.Emacs AppleAntiAliasingThreshold 10
+(set-default-font "-*-Monaco-normal-normal-normal-*-10-*-*-*-m-0-iso10646-1")
+(add-to-list 'face-ignored-fonts "\\`-[^-]*-monaco-bold-")
+
 ;; Make emacs look and behave like a modern text editor
-(set-default-font "-*-Menlo-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1")
-(set-default 'cursor-type '(bar . 1))
-(fringe-mode '(8 . 0))
+(fringe-mode '(nil . 0)) ;; Only show fringe on left
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (setq auto-window-vscroll nil)
-(setq scroll-step 1)
-(setq scroll-conservatively 10000)
 (delete-selection-mode t)
 (setq linum-format " %4d ")
 (global-visual-line-mode t)
@@ -69,7 +72,6 @@
 
 ;; y or n is good enough
 (defalias 'yes-or-no-p 'y-or-n-p)
-
 
 ;; Add vendor directories to load-path
 (defvar vendor-dir (expand-file-name "vendor" user-emacs-directory))
