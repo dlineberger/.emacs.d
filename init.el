@@ -12,13 +12,14 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 ;; Install packages I use in case they're not present
-(defvar my-packages '(ace-jump-mode
+(defvar my-packages '(avy
                       zenburn-theme
                       flycheck
                       helm
                       helm-projectile
                       js2-mode
                       less-css-mode
+                      diff-hl
                       magit
                       markdown-mode
                       org
@@ -126,7 +127,7 @@
   (forward-line -1)
   (indent-according-to-mode))
 
-(require 'ace-jump-mode)
+(require 'avy)
 (require 'uniquify)
 
 ;; Some key bindings
@@ -137,7 +138,7 @@
 (global-set-key (kbd "C-c m") 'magit-status)
 (global-set-key (kbd "C-c f") 'reveal-in-finder)
 (global-set-key (kbd "C-h d") 'dash-at-point)
-(global-set-key (kbd "C-c SPC") 'ace-jump-mode)
+(global-set-key (kbd "C-c SPC") 'avy-goto-word-or-subword-1)
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-c") 'kill-ring-save)
 (global-set-key (kbd "s-v") 'yank)
