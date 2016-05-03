@@ -7,8 +7,6 @@
 (load "package")
 (package-initialize)
 (add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 ;; Install packages I use in case they're not present
@@ -27,6 +25,7 @@
                       projectile
                       rainbow-mode
                       scss-mode
+                      sass-mode
                       smex
                       web-mode
                       coffee-mode
@@ -65,6 +64,7 @@
 (electric-indent-mode t)
 (electric-pair-mode t)
 (blink-cursor-mode 0)
+(auto-fill-mode -1)
 
 (setq inhibit-splash-screen t
       initial-scratch-message nil
@@ -146,6 +146,7 @@
 (global-set-key (kbd "s-z") 'undo)
 (global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key [(meta shift up)]  'move-line-up)
 (global-set-key [(meta shift down)]  'move-line-down)
 
@@ -175,7 +176,7 @@
 (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.sass\\'" . scss-mode))
+(add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
 
 (add-hook 'prog-mode-hook (lambda()
                             (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace))
@@ -191,10 +192,16 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
+;; Coding Style du Jour
+(load "~/.emacs.d/zignal.el")
+
 (setq twittering-status-format "%i %S @%s\n%FILL[ ]{%T}\n %FACE[glyphless-char]{%@ from %f%L%r%R}\n\n")
 
 ;; prevent lockfile creation (those nasty .# files that screw up Grunt)
 (setq create-lockfiles nil)
+
+;; prevent ls --dired issues by using 'gls' provided by brew coreutils
+(setq insert-directory-program (executable-find "gls"))
 
 ;; Allow ANSI characters in compilation buffer
 (ignore-errors
@@ -224,3 +231,4 @@
 ;; Zignal Labs Section
 (setq org-link-abbrev-alist
       '(("jira" . "https://politear.atlassian.net/browse/")))
+
