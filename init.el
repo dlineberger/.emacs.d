@@ -12,9 +12,11 @@
 ;; Install packages I use in case they're not present
 (defvar my-packages '(avy
                       zenburn-theme
+                      expand-region
                       flycheck
                       helm
                       helm-projectile
+                      helm-git-grep
                       js2-mode
                       less-css-mode
                       diff-hl
@@ -49,14 +51,18 @@
 ;; Set default font to Monaco 10.
 ;; This looks best when disabling anti-aliasing by running the following command:
 ;; defaults write org.gnu.Emacs AppleAntiAliasingThreshold 10
-(set-default-font "-*-Monaco-normal-normal-normal-*-10-*-*-*-m-0-iso10646-1")
-(add-to-list 'face-ignored-fonts "\\`-[^-]*-monaco-bold-")
+;;(set-default-font "-*-Monaco-normal-normal-normal-*-10-*-*-*-m-0-iso10646-1")
+;;(add-to-list 'face-ignored-fonts "\\`-[^-]*-monaco-bold-")
 
 ;; Make emacs look and behave like a modern text editor
-(fringe-mode '(nil . 0)) ;; Only show fringe on left
+(if window-system
+    (progn
+      (fringe-mode '(nil . 0)) ;; Only show fringe on left
+      (scroll-bar-mode -1)
+      (setq auto-window-vscroll nil)
+      )
+  (menu-bar-mode -1))
 (tool-bar-mode -1)
-(scroll-bar-mode -1)
-(setq auto-window-vscroll nil)
 (delete-selection-mode t)
 (setq linum-format " %4d ")
 (global-visual-line-mode t)
@@ -65,6 +71,20 @@
 (electric-pair-mode t)
 (blink-cursor-mode 0)
 (auto-fill-mode -1)
+
+
+;; Mac-specific Configuration
+(if (eq system-type 'darwin)
+    (progn
+      ;; prevent ls --dired issues by using 'gls' provided by brew coreutils
+      (setq insert-directory-program (executable-find "gls"))
+      (setq grep-command "ggrep")
+      (setq helm-locate-command "mdfind %s %s")
+      (setq locate-command "mdfind")
+      (setq ns-alternate-modifier (quote meta))
+      (setq ns-command-modifier (quote super))
+      (setq mac-command-modifier (quote super))
+      (setq mac-option-modifier (quote meta))))
 
 (setq inhibit-splash-screen t
       initial-scratch-message nil
@@ -134,11 +154,14 @@
 (global-set-key (kbd "C-c w") 'whitespace-mode)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 (global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "C-c f") 'helm-git-grep-at-point)
+(global-set-key (kbd "C-c g") 'helm-git-grep)
 (global-set-key (kbd "C-c l") 'linum-mode)
 (global-set-key (kbd "C-c m") 'magit-status)
 (global-set-key (kbd "C-c f") 'reveal-in-finder)
 (global-set-key (kbd "C-h d") 'dash-at-point)
 (global-set-key (kbd "C-c SPC") 'avy-goto-word-or-subword-1)
+(global-set-key (kbd "C-\\") 'er/expand-region)
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-c") 'kill-ring-save)
 (global-set-key (kbd "s-v") 'yank)
@@ -200,9 +223,6 @@
 ;; prevent lockfile creation (those nasty .# files that screw up Grunt)
 (setq create-lockfiles nil)
 
-;; prevent ls --dired issues by using 'gls' provided by brew coreutils
-(setq insert-directory-program (executable-find "gls"))
-
 ;; Allow ANSI characters in compilation buffer
 (ignore-errors
   (require 'ansi-color)
@@ -227,8 +247,3 @@
 
 ;; Set color theme
 (load-theme 'zenburn)
-
-;; Zignal Labs Section
-(setq org-link-abbrev-alist
-      '(("jira" . "https://politear.atlassian.net/browse/")))
-

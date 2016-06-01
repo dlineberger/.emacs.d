@@ -23,3 +23,7 @@
 (setq web-mode-css-indent-offset 2)
 (setq web-mode-markup-indent-offset 4)
 (setq web-mode-enable-control-block-indentation nil)
+
+;; Zignal Labs Section
+(setq org-link-abbrev-alist
+      '(("jira" . "https://politear.atlassian.net/browse/")))
