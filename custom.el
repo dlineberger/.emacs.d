@@ -4,9 +4,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(avy-keys (quote (97 111 101 117 105 100 104 116 110 115)))
+ '(blink-cursor-mode nil)
  '(custom-safe-themes t)
  '(custom-theme-directory "~/.emacs.d/vendor/color-themes")
  '(diff-hl-draw-borders t)
+ '(dired-dwim-target t)
  '(global-auto-revert-mode t)
  '(global-diff-hl-mode t)
  '(global-magit-file-buffer-mode t)
@@ -24,7 +26,7 @@
  '(mac-option-modifier (quote meta))
  '(magit-diff-arguments
    (quote
-    ("--ignore-space-change" "--ignore-all-space" "--no-ext-diff" "--stat")))
+    ("--ignore-space-change" "--ignore-all-space" "--no-ext-diff")))
  '(ns-alternate-modifier (quote meta))
  '(ns-command-modifier (quote super))
  '(org-agenda-files (quote ("~/Dropbox/Documents/org/agenda")))
@@ -49,6 +51,12 @@
      (home . :html-link-home))))
  '(org-insert-heading-respect-content t)
  '(org-use-sub-superscripts nil)
+ '(powerline-default-separator (quote wave))
+ '(powerline-default-separator-dir (quote (right . right)))
+ '(powerline-display-hud nil)
+ '(powerline-height 24)
+ '(powerline-text-scale-factor 2.0)
+ '(projectile-enable-caching t)
  '(projectile-global-mode t)
  '(projectile-use-git-grep t)
  '(rainbow-ansi-colors nil)
@@ -56,7 +64,8 @@
  '(rainbow-x-colors nil)
  '(safe-local-variable-values
    (quote
-    ((eval progn
+    ((flycheck-javascript-eslint-executable . "./node_modules/.bin/eslint")
+     (eval progn
            (require
             (quote projectile))
            (puthash
@@ -65,6 +74,9 @@
  '(scss-compile-at-save nil)
  '(send-mail-function (quote mailclient-send-it))
  '(show-paren-mode t)
+ '(solarized-distinct-fringe-background t)
+ '(solarized-high-contrast-mode-line t)
+ '(solarized-use-less-bold t)
  '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
@@ -72,13 +84,14 @@
  '(user-mail-address "dlineberger@gmail.com")
  '(visible-bell nil)
  '(web-mode-enable-control-block-indentation nil)
- '(web-mode-enable-current-element-highlight t)
- '(whitespace-style
-   (quote
-    (face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
+ '(web-mode-enable-current-element-highlight t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Source Code Pro" :foundry "nil" :slant normal :weight normal :height 130 :width normal))))
+ '(minibuffer-prompt ((t (:foreground "#0084C8" :weight bold :family "Source Sans Pro"))))
+ '(mode-line ((t (:family "Source Sans Pro"))))
+ '(mode-line-inactive ((t (:family "Source Sans Pro"))))
  '(web-mode-current-element-highlight-face ((t (:inherit highlight)))))

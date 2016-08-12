@@ -11,21 +11,22 @@
 
 ;; Install packages I use in case they're not present
 (defvar my-packages '(avy
-                      zenburn-theme
+                      diff-hl
+                      expand-region
                       flycheck
                       helm
                       helm-projectile
                       js2-mode
                       less-css-mode
-                      diff-hl
                       magit
                       markdown-mode
                       org
                       page-break-lines
                       projectile
                       rainbow-mode
-                      scss-mode
                       sass-mode
+                      scss-mode
+                      solarized-theme
                       smex
                       web-mode
                       coffee-mode
@@ -44,13 +45,16 @@
     (when (not (package-installed-p pkg))
       (package-install pkg))))
 
+(setq web-mode-content-types-alist
+      '(("js" . ".*\\.js[x]?\\'")))
+
 
 
 ;; Set default font to Monaco 10.
 ;; This looks best when disabling anti-aliasing by running the following command:
 ;; defaults write org.gnu.Emacs AppleAntiAliasingThreshold 10
-(set-default-font "-*-Monaco-normal-normal-normal-*-10-*-*-*-m-0-iso10646-1")
-(add-to-list 'face-ignored-fonts "\\`-[^-]*-monaco-bold-")
+;;(set-default-font "-*-Monaco-normal-normal-normal-*-10-*-*-*-m-0-iso10646-1")
+;;(add-to-list 'face-ignored-fonts "\\`-[^-]*-monaco-bold-")
 
 ;; Make emacs look and behave like a modern text editor
 (fringe-mode '(nil . 0)) ;; Only show fringe on left
@@ -77,6 +81,8 @@
 ;; Add vendor directories to load-path
 (defvar vendor-dir (expand-file-name "vendor" user-emacs-directory))
 (add-to-list 'load-path vendor-dir)
+
+(setq enable-remote-dir-locals t)
 
 (dolist (project (directory-files vendor-dir t "\\w+"))
   (when (file-directory-p project)
@@ -149,11 +155,11 @@
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key [(meta shift up)]  'move-line-up)
 (global-set-key [(meta shift down)]  'move-line-down)
-
+(global-set-key (kbd "C-c e") 'er/expand-region)
 ;; Turn on ido-mode
 (ido-mode t)
 
-;; Enable Projectile
+;; Enable Projectile Global Mode
 (projectile-global-mode)
 
 ;; Pretty-print ^L characters
@@ -180,6 +186,7 @@
 
 (add-hook 'prog-mode-hook (lambda()
                             (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace))
+                            (whitespace-mode)
                             (rainbow-mode)
                             (subword-mode)))
 
@@ -224,11 +231,8 @@
 ;;          (lambda (output)
 ;;            (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
 
+(require 'powerline)
+(powerline-default-theme)
 
 ;; Set color theme
-(load-theme 'zenburn)
-
-;; Zignal Labs Section
-(setq org-link-abbrev-alist
-      '(("jira" . "https://politear.atlassian.net/browse/")))
-
+(load-theme 'solarized-light)

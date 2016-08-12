@@ -13,6 +13,7 @@
 (setq js-indent-level 2)
 (setq js2-basic-offset 2)
 (setq js2-strict-missing-semi-warning nil)
+(setq js2-indent-switch-body t)
 
 ;; CoffeeScript
 (setq coffee-tab-width 2)
@@ -23,3 +24,10 @@
 (setq web-mode-css-indent-offset 2)
 (setq web-mode-markup-indent-offset 4)
 (setq web-mode-enable-control-block-indentation nil)
+
+;; Whitespace
+(setq whitespace-line-column 120)
+(setq whitespace-style '(face tabs trailing lines-tail))
+
+(setq org-link-abbrev-alist
+      '(("jira" . "https://politear.atlassian.net/browse/")))
