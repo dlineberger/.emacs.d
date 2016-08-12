@@ -12,18 +12,13 @@
  '(global-auto-revert-mode t)
  '(global-diff-hl-mode t)
  '(global-magit-file-buffer-mode t)
- '(grep-command "ggrep")
  '(grep-highlight-matches t)
- '(helm-locate-command "mdfind %s %s")
  '(ido-auto-merge-work-directories-length -1)
  '(ido-enable-flex-matching t)
  '(ido-use-virtual-buffers t)
  '(indent-tabs-mode nil)
  '(jabber-auto-reconnect t)
  '(line-spacing 2)
- '(locate-command "mdfind")
- '(mac-command-modifier (quote super))
- '(mac-option-modifier (quote meta))
  '(magit-diff-arguments
    (quote
     ("--ignore-space-change" "--ignore-all-space" "--no-ext-diff")))
