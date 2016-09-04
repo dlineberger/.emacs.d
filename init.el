@@ -23,6 +23,7 @@
                       markdown-mode
                       org
                       page-break-lines
+                      powerline
                       projectile
                       rainbow-mode
                       sass-mode
