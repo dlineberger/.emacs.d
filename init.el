@@ -75,6 +75,7 @@
 (electric-pair-mode t)
 (blink-cursor-mode 0)
 (auto-fill-mode -1)
+(desktop-save-mode 1)
 
 
 ;; Mac-specific Configuration
@@ -207,8 +208,9 @@
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
 
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 (add-hook 'prog-mode-hook (lambda()
-                            (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace))
                             (whitespace-mode)
                             (rainbow-mode)
                             (subword-mode)))
