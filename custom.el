@@ -9,7 +9,7 @@
  '(custom-theme-directory "~/.emacs.d/vendor/color-themes")
  '(desktop-save t)
  '(desktop-save-mode t)
- '(diff-hl-draw-borders t)
+ '(diff-hl-draw-borders nil)
  '(dired-dwim-target t)
  '(global-auto-revert-mode t)
  '(global-diff-hl-mode t)
@@ -21,13 +21,17 @@
  '(indent-tabs-mode nil)
  '(jabber-auto-reconnect t)
  '(line-spacing 2)
+ '(magit-completing-read-function (quote magit-builtin-completing-read))
  '(magit-diff-arguments
    (quote
     ("--ignore-space-change" "--ignore-all-space" "--no-ext-diff")))
+ '(magit-display-buffer-function (quote magit-display-buffer-fullframe-status-v1))
  '(ns-alternate-modifier (quote meta) t)
  '(ns-command-modifier (quote super) t)
  '(org-agenda-files (quote ("~/Dropbox/Documents/org/agenda")))
  '(org-blank-before-new-entry nil)
+ '(org-confirm-babel-evaluate nil)
+ '(org-default-notes-file (concat org-directory "/notes.org"))
  '(org-directory "~/Dropbox/Documents/org")
  '(org-export-with-sub-superscripts (quote {}))
  '(org-export-with-toc 2)
@@ -48,6 +52,9 @@
      (home . :html-link-home))))
  '(org-insert-heading-respect-content t)
  '(org-use-sub-superscripts nil)
+ '(package-selected-packages
+   (quote
+    (org-bullets ob-mongo rjsx-mode exec-path-from-shell all-the-icons js2-refactor doom-themes visual-regexp request apropospriate-theme auto-dim-other-buffers zenburn-theme yasnippet yaml-mode web-mode tao-theme solarized-theme smex scss-mode scala-mode sass-mode restclient rainbow-mode powerline php-mode page-break-lines markdown-mode magit leuven-theme less-css-mode json-mode js2-mode helm-projectile helm-git-grep git-timemachine gh flycheck flatui-theme expand-region editorconfig dockerfile-mode diff-hl dash-at-point csv-mode crux coffee-mode avy)))
  '(powerline-default-separator (quote wave))
  '(powerline-default-separator-dir (quote (right . right)))
  '(powerline-display-hud nil)
@@ -76,10 +83,12 @@
      (nil "lock" "gpg")
      ("lock" "")
      ("gpg" ""))))
+ '(projectile-switch-project-action (quote magit-status))
  '(projectile-use-git-grep t)
  '(rainbow-ansi-colors nil)
  '(rainbow-html-colors nil)
  '(rainbow-x-colors nil)
+ '(reb-re-syntax (quote string))
  '(safe-local-variable-values
    (quote
     ((flycheck-javascript-eslint-executable . "./node_modules/.bin/eslint")

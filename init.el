@@ -47,11 +47,6 @@
     (when (not (package-installed-p pkg))
       (package-install pkg))))
 
-(setq web-mode-content-types-alist
-      '(("js" . ".*\\.js[x]?\\'")))
-
-
-
 ;; Set default font to Monaco 10.
 ;; This looks best when disabling anti-aliasing by running the following command:
 ;; defaults write org.gnu.Emacs AppleAntiAliasingThreshold 10
@@ -63,6 +58,7 @@
     (progn
       (fringe-mode '(nil . 0)) ;; Only show fringe on left
       (scroll-bar-mode -1)
+      (horizontal-scroll-bar-mode -1)
       (setq auto-window-vscroll nil)
       )
   (menu-bar-mode -1))
@@ -76,7 +72,8 @@
 (blink-cursor-mode 0)
 (auto-fill-mode -1)
 (desktop-save-mode 1)
-
+(auto-dim-other-buffers-mode -1)
+(helm-mode 1)
 
 ;; Mac-specific Configuration
 (if (eq system-type 'darwin)
@@ -180,6 +177,9 @@
 (global-set-key [(meta shift up)]  'move-line-up)
 (global-set-key [(meta shift down)]  'move-line-down)
 (global-set-key (kbd "C-c e") 'er/expand-region)
+
+(js2r-add-keybindings-with-prefix "C-c C-r")
+
 ;; Turn on ido-mode
 (ido-mode t)
 
@@ -205,8 +205,12 @@
 (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
 (add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
+
+(add-to-list 'auto-mode-alist '("\\.svg\\'" . nxml-mode))
+
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -256,5 +260,23 @@
 (require 'powerline)
 (powerline-default-theme)
 
+
 ;; Set color theme
-(load-theme 'solarized-light)
+(if (display-graphic-p)
+    (progn
+      (load-theme 'zenburn))
+  (load-theme 'zenburn))
+
+
+;; use local jshint from node_modules before global, modified from
+;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
+(defun my/use-jshint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (jshint (and root
+                      (expand-file-name "node_modules/.bin/jshint"
+                                        root))))
+    (when (and jshint (file-executable-p jshint))
+      (setq-local flycheck-javascript-jshint-executable jshint))))
+(add-hook 'flycheck-mode-hook #'my/use-jshint-from-node-modules)
