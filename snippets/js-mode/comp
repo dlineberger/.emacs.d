@@ -1,0 +1,23 @@
+import React from 'react';
+import styles from './$1.css';
+
+class $1 extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+    };
+  }
+
+  render() {
+    return (
+      <div className={styles.$1}></div>
+    );
+  }
+}
+
+$1.propTypes = {};
+
+$1.defaultProps = {};
+
+export default $1;

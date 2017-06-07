@@ -1,0 +1,22 @@
+# -*- mode: snippet -*-
+#name: React Stateless Functional Component
+# --
+import React from 'react';
+import styles from './$1.css';
+
+const $1 = ({}) => {
+  return (
+    <div className={styles.$1}>
+      $0
+    </div>
+  );
+};
+
+
+$1.propTypes = {
+};
+
+$1.defaultProps = {
+};
+
+export default $1;
