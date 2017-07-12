@@ -10,7 +10,8 @@
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 ;; Install packages I use in case they're not present
-(defvar my-packages '(avy
+(defvar my-packages '(auto-dim-other-buffers
+                      avy
                       diff-hl
                       expand-region
                       flycheck
@@ -18,6 +19,7 @@
                       helm-projectile
                       helm-git-grep
                       js2-mode
+                      js2-refactor
                       less-css-mode
                       magit
                       markdown-mode
@@ -54,7 +56,7 @@
 ;;(add-to-list 'face-ignored-fonts "\\`-[^-]*-monaco-bold-")
 
 ;; Make emacs look and behave like a modern text editor
-(if window-system
+(if (display-graphic-p)
     (progn
       (fringe-mode '(nil . 0)) ;; Only show fringe on left
       (scroll-bar-mode -1)
