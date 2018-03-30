@@ -1,0 +1,39 @@
+/* eslint "no-use-before-define": "off", "no-unused-expressions": "off" */
+
+import React from 'react';
+import { shallow } from 'enzyme';
+import { expect } from 'chai';
+import { Light as theme } from 'themes';
+
+import $1 from './$1';
+
+let component;
+let _component;
+let context;
+const styles = theme.$1;
+
+describe('$1', () => {
+
+  beforeEach( () => {
+    _component = undefined;
+    context = { context: { theme, perspective: 'platform' } };
+  });
+
+  describe('default', () => {
+
+    beforeEach( () => {
+      component = shallow(<$1 />, context);
+    });
+
+    it('should render components', () => {
+      expect(getComponent().length).to.equal(1);
+    });
+
+  });
+
+});
+
+const getComponent = () => {
+  _component = _component || component.find('$1').shallow();
+  return _component;
+};

@@ -181,6 +181,7 @@
 (global-set-key (kbd "C-c e") 'er/expand-region)
 
 (js2r-add-keybindings-with-prefix "C-c C-r")
+(add-hook 'js2-mode-hook 'nvm-use-for-buffer)
 
 ;; Turn on ido-mode
 (ido-mode t)
@@ -212,7 +213,7 @@
 (add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
 
 (add-to-list 'auto-mode-alist '("\\.svg\\'" . nxml-mode))
-
+(add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -259,8 +260,10 @@
 ;;          (lambda (output)
 ;;            (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
 
-(require 'powerline)
-(powerline-default-theme)
+;;(require 'powerline)
+;;(powerline-default-theme)
+(require 'spaceline-config)
+(spaceline-spacemacs-theme)
 
 
 ;; Set color theme
@@ -282,3 +285,15 @@
     (when (and jshint (file-executable-p jshint))
       (setq-local flycheck-javascript-jshint-executable jshint))))
 (add-hook 'flycheck-mode-hook #'my/use-jshint-from-node-modules)
+
+
+;; Mocha extensions
+(defvar my-mocha-additional-file nil)
+
+(defun my-mocha-generate-command (orig-fun debug &optional mocha-file test)
+  (let ((my-mocha-file mocha-file))
+    (if (and mocha-file my-mocha-additional-file)
+        (setq my-mocha-file (concat my-mocha-additional-file " " mocha-file)))
+    (funcall orig-fun debug my-mocha-file test)))
+
+(advice-add 'mocha-generate-command :around #'my-mocha-generate-command)

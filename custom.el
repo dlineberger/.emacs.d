@@ -20,6 +20,7 @@
  '(ido-use-virtual-buffers t)
  '(indent-tabs-mode nil)
  '(jabber-auto-reconnect t)
+ '(js-switch-indent-offset 2)
  '(line-spacing 2)
  '(magit-completing-read-function (quote magit-builtin-completing-read))
  '(magit-diff-arguments
@@ -29,6 +30,7 @@
  '(ns-alternate-modifier (quote meta) t)
  '(ns-command-modifier (quote super) t)
  '(org-agenda-files (quote ("~/Dropbox/Documents/org/agenda")))
+ '(org-babel-load-languages (quote ((shell . t) (emacs-lisp . t))))
  '(org-blank-before-new-entry nil)
  '(org-confirm-babel-evaluate nil)
  '(org-default-notes-file (concat org-directory "/notes.org"))
@@ -51,16 +53,18 @@
      (up . :html-link-up)
      (home . :html-link-home))))
  '(org-insert-heading-respect-content t)
+ '(org-startup-indented t)
  '(org-use-sub-superscripts nil)
  '(package-selected-packages
    (quote
-    (org-bullets ob-mongo rjsx-mode exec-path-from-shell all-the-icons js2-refactor doom-themes visual-regexp request apropospriate-theme auto-dim-other-buffers zenburn-theme yasnippet yaml-mode web-mode tao-theme solarized-theme smex scss-mode scala-mode sass-mode restclient rainbow-mode powerline php-mode page-break-lines markdown-mode magit leuven-theme less-css-mode json-mode js2-mode helm-projectile helm-git-grep git-timemachine gh flycheck flatui-theme expand-region editorconfig dockerfile-mode diff-hl dash-at-point csv-mode crux coffee-mode avy)))
+    (nvm mocha es-mode spaceline spaceline-all-the-icons spacemacs-theme all-the-icons-dired projectile-ripgrep ripgrep ag ob-restclient org-bullets ob-mongo rjsx-mode exec-path-from-shell all-the-icons js2-refactor doom-themes visual-regexp request apropospriate-theme auto-dim-other-buffers zenburn-theme yasnippet yaml-mode web-mode tao-theme solarized-theme smex scss-mode scala-mode sass-mode restclient rainbow-mode powerline php-mode page-break-lines markdown-mode magit leuven-theme less-css-mode json-mode js2-mode helm-projectile helm-git-grep git-timemachine gh flycheck flatui-theme expand-region editorconfig dockerfile-mode diff-hl dash-at-point csv-mode crux coffee-mode avy)))
  '(powerline-default-separator (quote wave))
  '(powerline-default-separator-dir (quote (right . right)))
  '(powerline-display-hud nil)
  '(powerline-height 24)
  '(powerline-text-scale-factor 2.0)
- '(projectile-enable-caching t)
+ '(projectile-completion-system (quote helm))
+ '(projectile-enable-caching nil)
  '(projectile-global-mode t)
  '(projectile-other-file-alist
    (quote
@@ -89,6 +93,8 @@
  '(rainbow-html-colors nil)
  '(rainbow-x-colors nil)
  '(reb-re-syntax (quote string))
+ '(restclient-inhibit-cookies t)
+ '(ripgrep-arguments (quote ("-M 120")))
  '(safe-local-variable-values
    (quote
     ((flycheck-javascript-eslint-executable . "./node_modules/.bin/eslint")
