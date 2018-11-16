@@ -180,6 +180,10 @@
 (global-set-key [(meta shift up)]  'move-line-up)
 (global-set-key [(meta shift down)]  'move-line-down)
 (global-set-key (kbd "C-c e") 'er/expand-region)
+(global-set-key (kbd "s-+") 'text-scale-increase)
+(global-set-key (kbd "s-=") 'text-scale-increase)
+(global-set-key (kbd "s--") 'text-scale-decrease)
+(global-set-key (kbd "s-0") (lambda () (interactive) (text-scale-set 0)))
 
 (js2r-add-keybindings-with-prefix "C-c C-r")
 (add-hook 'js2-mode-hook 'nvm-use-for-buffer)
