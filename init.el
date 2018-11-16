@@ -12,12 +12,13 @@
 ;; Install packages I use in case they're not present
 (defvar my-packages '(auto-dim-other-buffers
                       avy
+                      coffee-mode
                       diff-hl
                       expand-region
                       flycheck
                       helm
-                      helm-projectile
                       helm-git-grep
+                      helm-projectile
                       js2-mode
                       js2-refactor
                       less-css-mode
@@ -30,11 +31,11 @@
                       rainbow-mode
                       sass-mode
                       scss-mode
-                      solarized-theme
                       smex
+                      solarized-theme
                       web-mode
-                      coffee-mode
-                      yasnippet)
+                      yasnippet
+                      zenburn-theme)
   "Default packages")
 
 (defun packages-installed-p ()
@@ -187,7 +188,8 @@
 (ido-mode t)
 
 ;; Enable Projectile Global Mode
-(projectile-global-mode)
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 ;; Pretty-print ^L characters
 (global-page-break-lines-mode t)
@@ -262,8 +264,8 @@
 
 ;;(require 'powerline)
 ;;(powerline-default-theme)
-(require 'spaceline-config)
-(spaceline-spacemacs-theme)
+;;(require 'spaceline-config)
+;;(spaceline-spacemacs-theme)
 
 
 ;; Set color theme

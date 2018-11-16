@@ -27,8 +27,8 @@
    (quote
     ("--ignore-space-change" "--ignore-all-space" "--no-ext-diff")))
  '(magit-display-buffer-function (quote magit-display-buffer-fullframe-status-v1))
- '(ns-alternate-modifier (quote meta) t)
- '(ns-command-modifier (quote super) t)
+ '(ns-alternate-modifier (quote meta))
+ '(ns-command-modifier (quote super))
  '(org-agenda-files (quote ("~/Dropbox/Documents/org/agenda")))
  '(org-babel-load-languages (quote ((shell . t) (emacs-lisp . t))))
  '(org-blank-before-new-entry nil)
@@ -57,7 +57,7 @@
  '(org-use-sub-superscripts nil)
  '(package-selected-packages
    (quote
-    (nvm mocha es-mode spaceline spaceline-all-the-icons spacemacs-theme all-the-icons-dired projectile-ripgrep ripgrep ag ob-restclient org-bullets ob-mongo rjsx-mode exec-path-from-shell all-the-icons js2-refactor doom-themes visual-regexp request apropospriate-theme auto-dim-other-buffers zenburn-theme yasnippet yaml-mode web-mode tao-theme solarized-theme smex scss-mode scala-mode sass-mode restclient rainbow-mode powerline php-mode page-break-lines markdown-mode magit leuven-theme less-css-mode json-mode js2-mode helm-projectile helm-git-grep git-timemachine gh flycheck flatui-theme expand-region editorconfig dockerfile-mode diff-hl dash-at-point csv-mode crux coffee-mode avy)))
+    (helm nvm mocha es-mode spaceline spaceline-all-the-icons spacemacs-theme all-the-icons-dired projectile-ripgrep ripgrep ag ob-restclient org-bullets ob-mongo rjsx-mode exec-path-from-shell all-the-icons js2-refactor doom-themes visual-regexp request apropospriate-theme auto-dim-other-buffers zenburn-theme yasnippet yaml-mode web-mode tao-theme solarized-theme smex scss-mode scala-mode sass-mode restclient rainbow-mode powerline php-mode page-break-lines markdown-mode magit leuven-theme less-css-mode json-mode js2-mode helm-projectile helm-git-grep git-timemachine gh flycheck flatui-theme expand-region editorconfig dockerfile-mode diff-hl dash-at-point csv-mode crux coffee-mode avy)))
  '(powerline-default-separator (quote wave))
  '(powerline-default-separator-dir (quote (right . right)))
  '(powerline-display-hud nil)
@@ -111,7 +111,7 @@
  '(solarized-high-contrast-mode-line t)
  '(solarized-use-less-bold t)
  '(tool-bar-mode nil)
- '(tramp-default-method "ssh")
+ '(tramp-default-method "ssh" nil (tramp))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
  '(user-full-name "David Lineberger")
  '(user-mail-address "dlineberger@gmail.com")
@@ -123,7 +123,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Source Code Pro" :foundry "nil" :slant normal :weight normal :height 130 :width normal))))
  '(minibuffer-prompt ((t (:foreground "#0084C8" :weight bold :family "Source Sans Pro"))))
  '(mode-line ((t (:family "Source Sans Pro"))))
  '(mode-line-inactive ((t (:family "Source Sans Pro"))))
