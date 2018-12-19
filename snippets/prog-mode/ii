@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+#name: landscape icon import
+# --
+import $1Icon from 'components/Icon/$1Icon';$0

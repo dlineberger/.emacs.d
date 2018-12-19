@@ -24,6 +24,7 @@
                       less-css-mode
                       magit
                       markdown-mode
+                      nvm
                       org
                       page-break-lines
                       powerline
@@ -210,12 +211,14 @@
 
 ;; Web Mode is awesome
 (require 'web-mode)
+(setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
 
 (add-to-list 'auto-mode-alist '("\\.svg\\'" . nxml-mode))

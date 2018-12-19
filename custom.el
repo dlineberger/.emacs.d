@@ -117,7 +117,8 @@
  '(user-mail-address "dlineberger@gmail.com")
  '(visible-bell nil)
  '(web-mode-enable-control-block-indentation nil)
- '(web-mode-enable-current-element-highlight t))
+ '(web-mode-enable-current-element-highlight t)
+ '(web-mode-markup-indent-offset 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
