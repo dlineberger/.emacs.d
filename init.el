@@ -1,11 +1,11 @@
-(require 'cl)
-
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
 ;; Initialize package manager
 (load "package")
-(package-initialize)
+(when (< emacs-major-version 27)
+  (package-initialize))
+
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
@@ -13,7 +13,9 @@
 (defvar my-packages '(auto-dim-other-buffers
                       avy
                       coffee-mode
+                      company
                       diff-hl
+                      exec-path-from-shell
                       expand-region
                       flycheck
                       helm
@@ -27,6 +29,7 @@
                       nvm
                       org
                       page-break-lines
+                      prettier-js
                       powerline
                       projectile
                       rainbow-mode
@@ -34,6 +37,7 @@
                       scss-mode
                       smex
                       solarized-theme
+                      tide
                       web-mode
                       yasnippet
                       zenburn-theme)
@@ -44,18 +48,22 @@
         when (not (package-installed-p pkg)) do (return nil)
         finally (return t)))
 
-(unless (packages-installed-p)
-  (message "%s" "Refreshing package database...")
-  (package-refresh-contents)
-  (dolist (pkg my-packages)
-    (when (not (package-installed-p pkg))
-      (package-install pkg))))
+;; (unless (packages-installed-p)
+;;   (message "%s" "Refreshing package database...")
+;;   (package-refresh-contents)
+;;   (dolist (pkg my-packages)
+;;     (when (not (package-installed-p pkg))
+;;       (package-install pkg))))
 
 ;; Set default font to Monaco 10.
 ;; This looks best when disabling anti-aliasing by running the following command:
 ;; defaults write org.gnu.Emacs AppleAntiAliasingThreshold 10
 ;;(set-default-font "-*-Monaco-normal-normal-normal-*-10-*-*-*-m-0-iso10646-1")
 ;;(add-to-list 'face-ignored-fonts "\\`-[^-]*-monaco-bold-")
+(set-frame-font "-*-Menlo-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 ;; Make emacs look and behave like a modern text editor
 (if (display-graphic-p)
@@ -190,7 +198,7 @@
 (add-hook 'js2-mode-hook 'nvm-use-for-buffer)
 
 ;; Turn on ido-mode
-(ido-mode t)
+;;(ido-mode t)
 
 ;; Enable Projectile Global Mode
 (projectile-mode +1)
@@ -218,7 +226,10 @@
 (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.soy\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.snap\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.ts[x]?\\'" . js-mode))
 (add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
 
 (add-to-list 'auto-mode-alist '("\\.svg\\'" . nxml-mode))
@@ -234,6 +245,9 @@
 (add-hook 'css-mode-hook (lambda()
                            (rainbow-mode)))
 
+(add-hook 'typescript-mode-hook 'prettier-js-mode)
+(add-hook 'js-mode-hook 'prettier-js-mode)
+
 ;; save backup files to temporary directory
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -241,7 +255,7 @@
       `((".*" ,temporary-file-directory t)))
 
 ;; Coding Style du Jour
-(load "~/.emacs.d/zignal.el")
+(load "~/.emacs.d/indeed.el")
 
 (setq twittering-status-format "%i %S @%s\n%FILL[ ]{%T}\n %FACE[glyphless-char]{%@ from %f%L%r%R}\n\n")
 
