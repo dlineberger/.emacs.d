@@ -1,322 +1,108 @@
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
+(setq inhibit-startup-message t)
 
-;; Initialize package manager
-(load "package")
-(when (< emacs-major-version 27)
-  (package-initialize))
+(scroll-bar-mode -1)        ; Disable visible scrollbar
+(tool-bar-mode -1)          ; Disable the toolbar
+(tooltip-mode -1)           ; Disable tooltips
+(set-fringe-mode 10)        ; Give some breathing room
 
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(menu-bar-mode 1)
+(setq dired-use-ls-dired nil)
+;; Set up the visible bell
+;;(setq visible-bell t)
 
-;; Install packages I use in case they're not present
-(defvar my-packages '(auto-dim-other-buffers
-                      avy
-                      coffee-mode
-                      company
-                      diff-hl
-                      exec-path-from-shell
-                      expand-region
-                      flycheck
-                      helm
-                      helm-git-grep
-                      helm-projectile
-                      js2-mode
-                      js2-refactor
-                      less-css-mode
-                      magit
-                      markdown-mode
-                      nvm
-                      org
-                      page-break-lines
-                      prettier-js
-                      powerline
-                      projectile
-                      rainbow-mode
-                      sass-mode
-                      scss-mode
-                      smex
-                      solarized-theme
-                      tide
-                      web-mode
-                      yasnippet
-                      zenburn-theme)
-  "Default packages")
+;;(set-face-attribute 'default nil :font "Fira Code Retina" :height 280)
 
-(defun packages-installed-p ()
-  (loop for pkg in my-packages
-        when (not (package-installed-p pkg)) do (return nil)
-        finally (return t)))
+(load-theme 'tango)
 
-;; (unless (packages-installed-p)
-;;   (message "%s" "Refreshing package database...")
-;;   (package-refresh-contents)
-;;   (dolist (pkg my-packages)
-;;     (when (not (package-installed-p pkg))
-;;       (package-install pkg))))
+;; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-;; Set default font to Monaco 10.
-;; This looks best when disabling anti-aliasing by running the following command:
-;; defaults write org.gnu.Emacs AppleAntiAliasingThreshold 10
-;;(set-default-font "-*-Monaco-normal-normal-normal-*-10-*-*-*-m-0-iso10646-1")
-;;(add-to-list 'face-ignored-fonts "\\`-[^-]*-monaco-bold-")
-(set-frame-font "-*-Menlo-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
 
-(when (memq window-system '(mac ns x))
+(package-initialize)
+(unless package-archive-contents
+ (package-refresh-contents))
+
+;; Initialize use-package on non-Linux platforms
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+;; Initialize package sources
+(use-package project
+  :init
+  (setq project-switch-commands 'magit-status)
+  :bind-keymap
+  ("C-c p" . project-prefix-map))
+
+
+;; Buffer Completion
+(use-package ivy
+  :diminish
+  :init
+  (ivy-mode 1))
+
+
+;; Project Management
+(require 'project)
+
+;; Git Interface
+(use-package magit
+  :init
+  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+  :bind (("C-c m" . magit-status)))
+
+(use-package which-key
+  :config
+  (which-key-mode))
+
+(use-package exec-path-from-shell
+  :config
   (exec-path-from-shell-initialize))
 
-;; Make emacs look and behave like a modern text editor
-(if (display-graphic-p)
-    (progn
-      (fringe-mode '(nil . 0)) ;; Only show fringe on left
-      (scroll-bar-mode -1)
-      (horizontal-scroll-bar-mode -1)
-      (setq auto-window-vscroll nil)
-      )
-  (menu-bar-mode -1))
-(tool-bar-mode -1)
-(delete-selection-mode t)
-(setq linum-format " %4d ")
-(global-visual-line-mode t)
-(global-hl-line-mode t)
-(electric-indent-mode t)
-(electric-pair-mode t)
-(blink-cursor-mode 0)
-(auto-fill-mode -1)
-(desktop-save-mode 1)
-(auto-dim-other-buffers-mode -1)
-(helm-mode 1)
+(use-package web-mode
+  :init
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  :mode (("\\.js\\'" . web-mode)
+	 ("\\.jsx\\'" .  web-mode)
+	 ("\\.ts\\'" . web-mode)
+	 ("\\.tsx\\'" . web-mode)
+	 ("\\.html\\'" . web-mode))
+  :commands web-mode
+)
 
-;; Mac-specific Configuration
-(if (eq system-type 'darwin)
-    (progn
-      ;; prevent ls --dired issues by using 'gls' provided by brew coreutils
-      (setq insert-directory-program (executable-find "gls"))
-      (setq grep-command "ggrep")
-      (setq helm-locate-command "mdfind %s %s")
-      (setq locate-command "mdfind")
-      (setq ns-alternate-modifier (quote meta))
-      (setq ns-command-modifier (quote super))
-      (setq mac-command-modifier (quote super))
-      (setq mac-option-modifier (quote meta))))
+(use-package lsp-mode
+  :init
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb
+  (setq gc-cons-threshold 100000000)
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-headerline-breadcrumb-enable nil)
+  :hook ((web-mode . lsp-deferred)))
 
-(setq inhibit-splash-screen t
-      initial-scratch-message nil
-      make-backup-files nil
-      frame-title-format '(buffer-file-name "%f" ("%b")))
-
-;; y or n is good enough
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-;; Add vendor directories to load-path
-(defvar vendor-dir (expand-file-name "vendor" user-emacs-directory))
-(add-to-list 'load-path vendor-dir)
-
-(setq enable-remote-dir-locals t)
-
-(dolist (project (directory-files vendor-dir t "\\w+"))
-  (when (file-directory-p project)
-    (message "Loading vendor directory %s" project)
-    (add-to-list 'load-path project)))
-
-;; store all backup and autosave files in the tmp dir
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+(use-package lsp-ui
+  :commands lsp-ui-mode)
 
 
-;; Highlight matching parentheses
-(show-paren-mode t)
-
-(defun untabify-buffer ()
-  (interactive)
-  (untabify (point-min) (point-max)))
-
-(defun tabify-buffer ()
-  (interactive)
-  (tabify (point-min) (point-max)))
-
-(defun indent-buffer ()
-  (interactive)
-  (indent-region (point-min) (point-max)))
-
-(defun cleanup-buffer ()
-  "Perform a bunch of operations on the whitespace content of a buffer."
-  (interactive)
-  (delete-trailing-whitespace)
-  (untabify-buffer)
-  (indent-buffer))
-
-(defun move-line-up ()
-  "Move up the current line."
-  (interactive)
-  (transpose-lines 1)
-  (forward-line -2)
-  (indent-according-to-mode))
-
-(defun move-line-down ()
-  "Move down the current line."
-  (interactive)
-  (forward-line 1)
-  (transpose-lines 1)
-  (forward-line -1)
-  (indent-according-to-mode))
-
-(require 'avy)
-(require 'uniquify)
-
-;; Some key bindings
-(global-set-key (kbd "C-c w") 'whitespace-mode)
-(global-set-key (kbd "C-c n") 'cleanup-buffer)
-(global-set-key (kbd "C-c h") 'helm-mini)
-(global-set-key (kbd "C-c f") 'helm-git-grep-at-point)
-(global-set-key (kbd "C-c g") 'helm-git-grep)
-(global-set-key (kbd "C-c l") 'linum-mode)
-(global-set-key (kbd "C-c m") 'magit-status)
-(global-set-key (kbd "C-c f") 'reveal-in-finder)
-(global-set-key (kbd "C-h d") 'dash-at-point)
-(global-set-key (kbd "C-c SPC") 'avy-goto-word-or-subword-1)
-(global-set-key (kbd "C-\\") 'er/expand-region)
-(global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "s-c") 'kill-ring-save)
-(global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-x") 'kill-region)
-(global-set-key (kbd "s-z") 'undo)
-(global-set-key (kbd "RET") 'newline-and-indent)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key [(meta shift up)]  'move-line-up)
-(global-set-key [(meta shift down)]  'move-line-down)
-(global-set-key (kbd "C-c e") 'er/expand-region)
-(global-set-key (kbd "s-+") 'text-scale-increase)
-(global-set-key (kbd "s-=") 'text-scale-increase)
-(global-set-key (kbd "s--") 'text-scale-decrease)
-(global-set-key (kbd "s-0") (lambda () (interactive) (text-scale-set 0)))
-
-(js2r-add-keybindings-with-prefix "C-c C-r")
-(add-hook 'js2-mode-hook 'nvm-use-for-buffer)
-
-;; Turn on ido-mode
-;;(ido-mode t)
-
-;; Enable Projectile Global Mode
-(projectile-mode +1)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-
-;; Pretty-print ^L characters
-(global-page-break-lines-mode t)
-
-;; Enable snippets
-(yas-global-mode)
-
-;; Show Git diff in fringe
-(global-diff-hl-mode t)
-
-;; Auto refresh buffers
-(global-auto-revert-mode 1)
-(setq global-auto-revert-non-file-buffers t)
-
-;; Web Mode is awesome
-(require 'web-mode)
-(setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
-(add-to-list 'auto-mode-alist '("\\.soy\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.snap\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.ts[x]?\\'" . js-mode))
-(add-to-list 'auto-mode-alist '("\\.sass\\'" . sass-mode))
-
-(add-to-list 'auto-mode-alist '("\\.svg\\'" . nxml-mode))
-(add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode))
-
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-(add-hook 'prog-mode-hook (lambda()
-                            (whitespace-mode)
-                            (rainbow-mode)
-                            (subword-mode)))
-
-(add-hook 'css-mode-hook (lambda()
-                           (rainbow-mode)))
-
-(add-hook 'typescript-mode-hook 'prettier-js-mode)
-(add-hook 'js-mode-hook 'prettier-js-mode)
-
-;; save backup files to temporary directory
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-;; Coding Style du Jour
-(load "~/.emacs.d/indeed.el")
-
-(setq twittering-status-format "%i %S @%s\n%FILL[ ]{%T}\n %FACE[glyphless-char]{%@ from %f%L%r%R}\n\n")
-
-;; prevent lockfile creation (those nasty .# files that screw up Grunt)
-(setq create-lockfiles nil)
-
-;; Allow ANSI characters in compilation buffer
-(ignore-errors
-  (require 'ansi-color)
-  (defun my-colorize-compilation-buffer ()
-    (when (eq major-mode 'compilation-mode)
-      (ansi-color-apply-on-region compilation-filter-start (point-max))))
-  (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
-
-;; Javascript REPL
-;; (require 'js-comint)
-;; (setq inferior-js-program-command "node")
-;; (setq inferior-js-mode-hook
-;;       (lambda ()
-;;         ;; We like nice colors
-;;         (ansi-color-for-comint-mode-on)
-;;         ;; Deal with some prompt nonsense
-;;         (add-to-list
-;;          'comint-preoutput-filter-functions
-;;          (lambda (output)
-;;            (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
-
-;;(require 'powerline)
-;;(powerline-default-theme)
-;;(require 'spaceline-config)
-;;(spaceline-spacemacs-theme)
+(use-package prettier-js
+  :hook (web-mode . prettier-js-mode))
 
 
-;; Set color theme
-(if (display-graphic-p)
-    (progn
-      (load-theme 'zenburn))
-  (load-theme 'zenburn))
-
-
-;; use local jshint from node_modules before global, modified from
-;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
-(defun my/use-jshint-from-node-modules ()
-  (let* ((root (locate-dominating-file
-                (or (buffer-file-name) default-directory)
-                "node_modules"))
-         (jshint (and root
-                      (expand-file-name "node_modules/.bin/jshint"
-                                        root))))
-    (when (and jshint (file-executable-p jshint))
-      (setq-local flycheck-javascript-jshint-executable jshint))))
-(add-hook 'flycheck-mode-hook #'my/use-jshint-from-node-modules)
-
-
-;; Mocha extensions
-(defvar my-mocha-additional-file nil)
-
-(defun my-mocha-generate-command (orig-fun debug &optional mocha-file test)
-  (let ((my-mocha-file mocha-file))
-    (if (and mocha-file my-mocha-additional-file)
-        (setq my-mocha-file (concat my-mocha-additional-file " " mocha-file)))
-    (funcall orig-fun debug my-mocha-file test)))
-
-(advice-add 'mocha-generate-command :around #'my-mocha-generate-command)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(prettier-js which-key web-mode use-package project magit lsp-ui ivy exec-path-from-shell command-log-mode)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
