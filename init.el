@@ -91,10 +91,12 @@
 
 ;; Buffer Completion
 (use-package vertico
+  :ensure t
   :init
   (vertico-mode))
 
 (use-package orderless
+  :ensure t
   :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
@@ -107,6 +109,7 @@
 
 ;; Git Interface
 (use-package magit
+  :ensure t
   :init
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
   :bind (("C-c m" . magit-status)))
@@ -121,10 +124,12 @@
 ;;   (which-key-mode))
 
 (use-package exec-path-from-shell
+  :ensure t
   :config
   (exec-path-from-shell-initialize))
 
 (use-package web-mode
+  :ensure t
   :init
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-code-indent-offset 2)
@@ -137,21 +142,24 @@
   :commands web-mode
 )
 
-;; (use-package lsp-mode
-;;   :init
-;;   (setq read-process-output-max (* 1024 1024)) ;; 1mb
-;;   (setq gc-cons-threshold 100000000)
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   (setq lsp-headerline-breadcrumb-enable nil)
-;;   :hook ((web-mode . lsp-deferred)))
+(use-package lsp-mode
+  :ensure t
+  :init
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb
+  (setq gc-cons-threshold 100000000)
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-headerline-breadcrumb-enable nil)
+  :hook ((web-mode . lsp-deferred)))
 
 ;; (use-package lsp-ui
 ;;   :commands lsp-ui-mode)
 
 (use-package prettier-js
+  :ensure t
   :hook (web-mode . prettier-js-mode))
 
 (use-package org
+  :ensure t
   :init
   (setq org-directory "~/Sync/org")
   (setq org-agenda-files '("~/Sync/org"))
@@ -178,7 +186,7 @@
   (find-file org-default-notes-file))
 
 (use-package multiple-cursors
-  :ensure   t
+  :ensure  t
   :bind (("H-SPC" . set-rectangular-region-anchor)
          ("C-M-SPC" . set-rectangular-region-anchor)
          ("C->" . mc/mark-next-like-this)
@@ -198,7 +206,7 @@
    '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "1436985fac77baf06193993d88fa7d6b358ad7d600c1e52d12e64a2f07f07176" default))
  '(make-backup-files nil)
  '(package-selected-packages
-   '(multiple-cursors forge org-mode ivy-prescient nord-theme dracula-theme orderless selectrum lsp-mode prettier-js which-key web-mode use-package project magit lsp-ui ivy exec-path-from-shell command-log-mode)))
+   '(vertico multiple-cursors forge org-mode ivy-prescient nord-theme dracula-theme orderless selectrum lsp-mode prettier-js which-key web-mode use-package project magit lsp-ui ivy exec-path-from-shell command-log-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
