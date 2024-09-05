@@ -36,7 +36,7 @@
       (menu-bar-mode 1)
       (pixel-scroll-precision-mode 1)
       (set-fringe-mode '(10 . 0)) ; Give some breathing room
-      (set-face-attribute 'default nil :font "JetBrains Mono")
+      (set-face-attribute 'default nil :font "JetBrains Mono" :weight 'light)
       (set-face-attribute 'mode-line nil :font "SF Pro")
       (set-face-attribute 'minibuffer-prompt nil :font "SF Pro"))
   (progn
@@ -48,9 +48,8 @@
      (list temporary-file-directory))
 
 (setq package-archives '(("melpa-stable" . "https://stable.melpa.org/packages/")
-			 ("melpa-unstable" . "https://melpa.org/packages/")
-                          ("org" . "https://orgmode.org/elpa/")
-                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
@@ -62,6 +61,19 @@
   (package-install 'use-package))
 
 (require 'use-package)
+
+(use-package eshell
+  :ensure nil
+  :custom
+  (setq eshell-scroll-to-bottom-on-input 'this))
+
+(use-package eat
+  :ensure t
+  :hook (eshell-mode . eat-eshell-mode))
+
+(use-package envrc
+  :ensure t
+  :hook (after-init . envrc-global-mode))
 
 (use-package diminish
   :ensure t)
@@ -193,8 +205,10 @@
 
 ;; VTerm for fast terminal sessions
 (use-package vterm
+  :ensure t
   :commands vterm
-  :bind (("s-k" . vterm-clear))
+  :bind (:map vterm-mode-map
+	      ("s-k" . vterm-clear))
   :config
   (setq vterm-clear-scrollback-when-clearing t)
   (setq vterm-max-scrollback 10000))
@@ -245,13 +259,14 @@
               ("h" . project-find-file)))
 
 (use-package shell
+  :ensure nil
   :config
   (setq comint-prompt-read-only t)
   (setq comint-scroll-to-bottom-on-input t)
-  :bind (("s-k" . comint-clear-buffer)
-	 ("<up>" . comint-previous-input)
-	 ("<down>" . comint-next-input)
-	 ))
+  :bind (:map shell-mode-map
+	      ("s-k" . comint-clear-buffer)
+	      ("<up>" . comint-previous-input)
+	      ("<down>" . comint-next-input)))
 
 ;; Buffer Completion
 (use-package vertico
@@ -313,7 +328,7 @@
   :diminish "LSP"
   :ensure t
   :hook ((lsp-mode . lsp-diagnostics-mode)
-	 ;;         (lsp-mode . lsp-enable-which-key-integration)
+	 (lsp-mode . lsp-enable-which-key-integration)
          ((tsx-ts-mode
             typescript-ts-mode
             markdown-mode
@@ -359,7 +374,7 @@
   (lsp-modeline-diagnostics-enable nil)  ; Already supported through `flycheck'
   (lsp-modeline-workspace-status-enable nil) ; Modeline displays "LSP" when lsp-mode is enabled
   (lsp-signature-doc-lines 1)                ; Don't raise the echo area. It's distracting
-  (lsp-ui-doc-use-childframe t)              ; Show docs for symbol at point
+  (lsp-ui-doc-use-childframe nil)              ; Show docs for symbol at point
   (lsp-eldoc-render-all nil)            ; This would be very useful if it would respect `lsp-signature-doc-lines', currently it's distracting
   ;; lens
   (lsp-lens-enable nil)                 ; Optional, I don't need it
@@ -376,19 +391,19 @@
   :no-require
   :hook ((lsp-mode . lsp-completion-mode)))
 
-(use-package lsp-ui
-  :ensure t
-  :commands
-  (lsp-ui-doc-show
-   lsp-ui-doc-glance)
-  :bind (:map lsp-mode-map
-              ("C-c C-d" . 'lsp-ui-doc-glance))
-  :after (lsp-mode evil)
-  :config (setq lsp-ui-doc-enable t
-                lsp-ui-doc-show-with-cursor nil      ; Don't show doc when cursor is over symbol - too distracting
-            lsp-ui-doc-include-signature t       ; Show signature
-            lsp-ui-sideline-show-diagnostics nil
-                lsp-ui-doc-position 'at-point))
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :commands
+;;   (lsp-ui-doc-show
+;;    lsp-ui-doc-glance)
+;;   :bind (:map lsp-mode-map
+;;               ("C-c C-d" . 'lsp-ui-doc-glance))
+;;   :after (lsp-mode evil)
+;;   :config (setq lsp-ui-doc-enable t
+;;                 lsp-ui-doc-show-with-cursor nil      ; Don't show doc when cursor is over symbol - too distracting
+;;             lsp-ui-doc-include-signature t       ; Show signature
+;;             lsp-ui-sideline-show-diagnostics nil
+;;                 lsp-ui-doc-position 'at-point))
 
 (use-package lsp-eslint
   :demand t
@@ -476,13 +491,18 @@
  '(doom-nord-padded-modeline t t)
  '(elfeed-feeds
     '("http://www.reddit.com/.rss" "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" "http://www.austinist.com/index.rdf" "http://brandonsanderson.com/feed/" "http://www.cerealously.net/feed/" "http://xkcd.com/atom.xml" "http://blog.roku.com/feed/" "http://theshot.coffeeratings.com/feed/" "http://feeds.feedburner.com/SamHarris" "http://usesthis.com/feed/" "http://www.marco.org/rss" "http://www.macsparky.com/blog/rss.xml" "http://feeds.feedburner.com/shawnblanc" "http://daringfireball.net/index.xml" "http://www.macrumors.com/macrumors.xml" "http://www.burntorangenation.com/rss2/index.xml" "http://feeds.feedburner.com/sportsblogs/barkingcarnival" "http://thebuddhistblog.blogspot.com/feeds/posts/default" "http://www.financialsamurai.com/feed/" "http://endlessparentheses.com/atom.xml" "http://emacsredux.com/atom.xml" "http://pragmaticemacs.com/feed/" "http://baha-news.blogspot.com/feeds/posts/default" "http://feeds.feedburner.com/EBNosh" "http://eastbaydish.com/?feed=rss2" "http://hoodline.com/atom"))
+ '(eshell-prompt-function
+    #[0 "\300\301 !\302 \303U\203\17\0\304\202\20\0\305P\207"
+       [abbreviate-file-name eshell/pwd user-uid 0 " # " " λ "]
+       3])
+ '(eshell-prompt-regexp "^[^#$\12]* [#$λ] ")
  '(markdown-css-paths
     '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css"))
  '(org-preview-html-viewer 'xwidget)
  '(org-safe-remote-resources
     '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-    '(elfeed-web devdocs eat cheat-sh ox-gfm consult htmlize ob-typescript diminish add-node-modules-path editorconfig flycheck elfeed corfu restclient project ef-themes deft mastodon sqlite3 sqlite marginalia forge modus-themes org-preview-html project-tab-groups which-key catppuccin-theme doom-themes vterm git-timemachine web-mode vertico use-package spinner prettier-js orderless multiple-cursors markdown-mode magit lv ht f exec-path-from-shell))
+    '(envrc elfeed-web devdocs eat cheat-sh ox-gfm consult htmlize ob-typescript diminish add-node-modules-path editorconfig flycheck elfeed corfu restclient project ef-themes deft mastodon sqlite3 sqlite marginalia forge modus-themes org-preview-html project-tab-groups which-key catppuccin-theme doom-themes vterm git-timemachine web-mode vertico use-package spinner prettier-js orderless multiple-cursors markdown-mode magit lv ht f exec-path-from-shell))
  '(web-mode-comment-formats
     '(("java" . "/*")
        ("javascript" . "//")
