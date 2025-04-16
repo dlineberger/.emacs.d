@@ -7,15 +7,18 @@
 
 ;; Standard Emacs settings
 (use-package emacs
-  :init
-  (setq inhibit-startup-message t)
-  (setq make-backup-files nil)
-  (setq ring-bell-function 'ignore)
-  (setq use-short-answers t)
+  :custom
+  (inhibit-startup-message t)
+  (make-backup-files nil)
+  (ring-bell-function 'ignore)
+  (use-short-answers t)
+  (custom-safe-themes t)
   (tooltip-mode -1)           ; Disable tooltips
   (delete-selection-mode 1)   ; Act like a normal editor
   (savehist-mode 1)
-  (lock-file-mode -1))
+  (lock-file-mode -1)
+  (mouse-wheel-mode nil)
+  (grep-command "rg"))
 
 ;; For opening huge files
 (use-package so-long
@@ -36,11 +39,13 @@
       (menu-bar-mode 1)
       (pixel-scroll-precision-mode 1)
       (set-fringe-mode '(10 . 0)) ; Give some breathing room
-      (set-face-attribute 'default nil :font "JetBrains Mono" :weight 'light)
+      (set-frame-parameter nil 'alpha-background 70)
+      (add-to-list 'default-frame-alist '(alpha-background . 70))
+      (set-face-attribute 'default nil :font "JetBrains Mono" :weight 'thin)
       (set-face-attribute 'mode-line nil :font "SF Pro")
       (set-face-attribute 'minibuffer-prompt nil :font "SF Pro"))
   (progn
-    (load-theme 'ef-trio-light t)
+    (load-theme 'ef-owl t)
     (menu-bar-mode -1)))
 
 ;; Workaround a tramp-MacOS bug that dramatically slows completion
@@ -52,20 +57,28 @@
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
+(use-package devdocs
+  :ensure t
+  :config
+  (setq devdocs-site-url "http://localhost:9292")
+  (setq devdocs-cdn-url "http://localhost:9292/docs")
+  :bind (("C-h D" . devdocs-lookup)))
 
-;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
 
-(require 'use-package)
+(use-package esh-mode
+  :ensure nil
+  :config
+  (defun my/shell-clear ()
+    (interactive)
+    (eshell/clear 1)
+    (eshell-emit-prompt))
+  :bind ((:map eshell-mode-map
+               ("s-k" . my/shell-clear))))
 
 (use-package eshell
   :ensure nil
   :custom
-  (setq eshell-scroll-to-bottom-on-input 'this))
+  (eshell-scroll-to-bottom-on-input 'this))
 
 (use-package eat
   :ensure t
@@ -99,6 +112,10 @@
   :ensure nil
   :hook (prog-mode))
 
+(use-package eglot
+  :ensure nil
+  :hook (prog-mode . eglot-ensure))
+
 (use-package eww
   :ensure nil
   :config
@@ -118,8 +135,8 @@
 
 (use-package treesit
   :mode (("\\.tsx\\'" . tsx-ts-mode)
-         ("\\.js\\'"  . typescript-ts-mode)
-         ("\\.mjs\\'" . typescript-ts-mode)
+         ("\\.js\\'"  . js-ts-mode)
+         ("\\.mjs\\'" . js-ts-mode)
          ("\\.mts\\'" . typescript-ts-mode)
          ("\\.cjs\\'" . typescript-ts-mode)
          ("\\.ts\\'"  . typescript-ts-mode)
@@ -191,12 +208,12 @@
   :bind (
           ("C-x b" . consult-buffer)))
 
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode)
-  :bind (:map flycheck-mode-map
-              ("M-n" . flycheck-next-error) ; optional but recommended error navigation
-              ("M-p" . flycheck-previous-error)))
+;; (use-package flycheck
+;;   :ensure t
+;;   :init (global-flycheck-mode)
+;;   :bind (:map flycheck-mode-map
+;;               ("M-n" . flycheck-next-error) ; optional but recommended error navigation
+;;               ("M-p" . flycheck-previous-error)))
 
 (use-package re-builder
   :config
@@ -249,24 +266,55 @@
 ;;   (add-to-list 'compilation-error-regexp-alist-alist regexp)
 ;;   (add-to-list 'compilation-error-regexp-alist (car regexp)))
 
-;; Project management
+;;Project management
 (use-package project
+  :config
+  (defun my/project-vterm ()
+  "Start vterm in the current project's root directory.
+If a buffer already exists for running vterm in the project's root,
+switch to it. Otherwise, create a new vterm buffer.
+With \\[universal-argument] prefix arg, create a new vterm buffer even
+if one already exists."
+  (interactive)
+  (let* ((default-directory (project-root (project-current t)))
+	 (vterm-buffer-name (project-prefixed-buffer-name "vterm"))
+	 (vterm-buffer (get-buffer vterm-buffer-name)))
+    (if (and vterm-buffer (not current-prefix-arg))
+	(pop-to-buffer vterm-buffer (bound-and-true-p display-comint-buffer-action))
+      (vterm))))
   :init
   (setq project-switch-commands 'project-magit-status)
   :bind-keymap
   ("C-c p" . project-prefix-map)
   :bind (:map project-prefix-map
-              ("h" . project-find-file)))
+          ("h" . project-find-file)
+          ("t" . my/project-vterm)))
+
+;; (use-package projectile
+;;   :ensure t
+;;   :init
+;;   (projectile-mode +1)
+;;   (setq projectile-project-search-path '("~/indeed/"))
+;;   (setq projectile-switch-project-action 'project-magit-status)
+;;   :bind (:map projectile-mode-map
+;;               ("s-p" . projectile-command-map)
+;;               ("C-c p" . projectile-command-map)))
 
 (use-package shell
   :ensure nil
   :config
+  (setq shell-kill-buffer-on-exit t)
   (setq comint-prompt-read-only t)
   (setq comint-scroll-to-bottom-on-input t)
   :bind (:map shell-mode-map
 	      ("s-k" . comint-clear-buffer)
 	      ("<up>" . comint-previous-input)
 	      ("<down>" . comint-next-input)))
+
+
+(use-package ace-window
+  :ensure t
+  :bind (("C-x o" . ace-window)))
 
 ;; Buffer Completion
 (use-package vertico
@@ -322,103 +370,8 @@
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
   :config
   (setq magit-process-finish-apply-ansi-colors t)
+  (setq magit-save-repository-buffers 'dontask)
   :bind (("C-c m" . magit-status)))
-
-(use-package lsp-mode
-  :diminish "LSP"
-  :ensure t
-  :hook ((lsp-mode . lsp-diagnostics-mode)
-	 (lsp-mode . lsp-enable-which-key-integration)
-         ((tsx-ts-mode
-            typescript-ts-mode
-            markdown-mode
-           js-ts-mode) . lsp-deferred))
-  :custom
-  (lsp-keymap-prefix "C-c l")           ; Prefix for LSP actions
-  (lsp-completion-provider :none)       ; Using Corfu as the provider
-  (lsp-diagnostics-provider :flycheck)
-  (lsp-session-file (locate-user-emacs-file ".lsp-session"))
-  (lsp-log-io nil)                      ; IMPORTANT! Use only for debugging! Drastically affects performance
-  (lsp-keep-workspace-alive nil)        ; Close LSP server if all project buffers are closed
-  (lsp-idle-delay 0.5)                  ; Debounce timer for `after-change-function'
-  ;; core
-  (lsp-enable-xref t)                   ; Use xref to find references
-  (lsp-auto-configure t)                ; Used to decide between current active servers
-  (lsp-eldoc-enable-hover t)            ; Display signature information in the echo area
-  (lsp-enable-dap-auto-configure t)     ; Debug support
-  (lsp-enable-file-watchers nil)
-  (lsp-enable-folding nil)              ; I disable folding since I use origami
-  (lsp-enable-imenu t)
-  (lsp-enable-indentation nil)          ; I use prettier
-  (lsp-enable-links nil)                ; No need since we have `browse-url'
-  (lsp-enable-on-type-formatting nil)   ; Prettier handles this
-  (lsp-enable-suggest-server-download t) ; Useful prompt to download LSP providers
-  (lsp-enable-symbol-highlighting t)     ; Shows usages of symbol at point in the current buffer
-  (lsp-enable-text-document-color nil)   ; This is Treesitter's job
-
-  (lsp-ui-sideline-show-hover nil)      ; Sideline used only for diagnostics
-  (lsp-ui-sideline-show-diagnostics nil)
-  (lsp-ui-sideline-diagnostic-max-lines 20) ; 20 lines since typescript errors can be quite big
-  ;; completion
-  (lsp-completion-enable nil)
-  (lsp-completion-enable-additional-text-edit t) ; Ex: auto-insert an import for a completion candidate
-  (lsp-enable-snippet t)                         ; Important to provide full JSX completion
-  (lsp-completion-show-kind t)                   ; Optional
-  ;; headerline
-  (lsp-headerline-breadcrumb-enable t)  ; Optional, I like the breadcrumbs
-  (lsp-headerline-breadcrumb-enable-diagnostics nil) ; Don't make them red, too noisy
-  (lsp-headerline-breadcrumb-enable-symbol-numbers nil)
-  (lsp-headerline-breadcrumb-icons-enable nil)
-  ;; modeline
-  (lsp-modeline-code-actions-enable nil) ; Modeline should be relatively clean
-  (lsp-modeline-diagnostics-enable nil)  ; Already supported through `flycheck'
-  (lsp-modeline-workspace-status-enable nil) ; Modeline displays "LSP" when lsp-mode is enabled
-  (lsp-signature-doc-lines 1)                ; Don't raise the echo area. It's distracting
-  (lsp-ui-doc-use-childframe nil)              ; Show docs for symbol at point
-  (lsp-eldoc-render-all nil)            ; This would be very useful if it would respect `lsp-signature-doc-lines', currently it's distracting
-  ;; lens
-  (lsp-lens-enable nil)                 ; Optional, I don't need it
-  ;; semantic
-  (lsp-semantic-tokens-enable nil)      ; Related to highlighting, and we defer to treesitter
-
-  :init
-  (setq read-process-output-max (* 1024 1024)) ;; 1mb
-  (setq gc-cons-threshold 100000000)
-  (setq lsp-use-plists t))
-
-
-(use-package lsp-completion
-  :no-require
-  :hook ((lsp-mode . lsp-completion-mode)))
-
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :commands
-;;   (lsp-ui-doc-show
-;;    lsp-ui-doc-glance)
-;;   :bind (:map lsp-mode-map
-;;               ("C-c C-d" . 'lsp-ui-doc-glance))
-;;   :after (lsp-mode evil)
-;;   :config (setq lsp-ui-doc-enable t
-;;                 lsp-ui-doc-show-with-cursor nil      ; Don't show doc when cursor is over symbol - too distracting
-;;             lsp-ui-doc-include-signature t       ; Show signature
-;;             lsp-ui-sideline-show-diagnostics nil
-;;                 lsp-ui-doc-position 'at-point))
-
-(use-package lsp-eslint
-  :demand t
-  :after lsp-mode)
-;; (use-package lsp-mode
-;;   :init
-;;   (setq read-process-output-max (* 1024 1024)) ;; 1mb
-;;   (setq gc-cons-threshold 100000000)
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   (setq lsp-headerline-breadcrumb-enable nil)
-;;   :hook ((web-mode . lsp-deferred)))
-
-;; (use-package lsp-ui
-;;   :commands lsp-ui-mode)
-
 
 ;; Note: Make sure to install prettier via npm
 (use-package prettier-js
@@ -429,14 +382,15 @@
   :ensure t
   :init
   (setq org-directory "~/Sync/org")
-  (setq org-agenda-files '("~/Sync/org/current.org"))
-  (setq org-default-notes-file (concat org-directory "/current.org"))
+  (setq org-agenda-files '("~/Sync/org/indeed/journal/current.org"))
+  (setq org-default-notes-file (concat org-directory "/indeed/journal/current.org"))
   (setq org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!)")))
   (setq org-link-abbrev-alist
         '(("jira" . "https://bugs.indeed.com/browse/%s")))
   (setq org-startup-indented t)
   (setq org-html-keep-old-src t)
   (setq org-export-with-toc t)
+  (setq org-hide-emphasis-markers t)
   (setq org-html-preamble nil)
   (setq org-html-postamble nil)
   (setq org-export-with-section-numbers t)
@@ -478,43 +432,111 @@
          ("C-<" . mc/mark-previous-like-this)
          ("C-c C->" . mc/mark-all-like-this)
          ("C-c C-SPC" . mc/edit-lines)
-         ))
+          ))
+
+
+(use-package elfeed
+  :ensure t
+  :custom
+  (elfeed-feeds
+    '(
+       "http://baha-news.blogspot.com/feeds/posts/default"
+       "http://brandonsanderson.com/feed/"
+       ("http://daringfireball.net/index.xml" apple)
+       ("http://eastbaydish.com/?feed=rss2" bay-area)
+       ("http://emacsredux.com/atom.xml" emacs)
+       ("http://endlessparentheses.com/atom.xml" emacs)
+       ("http://feeds.feedburner.com/EBNosh" bay-area)
+       "http://feeds.feedburner.com/SamHarris"
+       "http://feeds.feedburner.com/shawnblanc"
+       "http://feeds.feedburner.com/sportsblogs/barkingcarnival"
+       "http://hoodline.com/atom"
+       ("http://pragmaticemacs.com/feed/" emacs)
+       "http://thebuddhistblog.blogspot.com/feeds/posts/default"
+       ("http://theshot.coffeeratings.com/feed/" coffee)
+       "http://usesthis.com/feed/"
+       ("http://www.burntorangenation.com/rss2/index.xml" longhorns)
+       "http://www.cerealously.net/feed/"
+       "http://www.financialsamurai.com/feed/"
+       ("http://www.macrumors.com/macrumors.xml" apple)
+       ("http://www.macsparky.com/blog/rss.xml" apple)
+       ("http://www.marco.org/rss" apple)
+       ("http://xkcd.com/atom.xml" comics)
+       ("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" news)
+)))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-    '("28d91e89883df5dd87c7da27f6a15e8e41bb92a0c1341eaa9f397ed67b10b21d" "6ccb6eb66c70661934a94f395d755a84f3306732271c55d41a501757e4c39fcb" "694dbeb8f98dddfb603a2fe0c04101f3fe457ee49bf90a6a581271e7f9c580c8" "aa688776604bbddbaba9e0c0d77e8eb5f88d94308f223d1962b6e6b902add6a0" "df1ed4aa97d838117dbda6b2d84b70af924b0380486c380afb961ded8a41c386" "317754d03bb6d85b5a598480e1bbee211335bbf496d441af4992bbf1e777579e" "30b323c73d2b24c3eff96802f0085fbfef3c6d2aad03ddfb5f615b658b2d5bfa" "ccb2ff53e9794d059ff941fabcf265b67c8418da664db8c4d6a3d656962b7135" "14ba61945401e42d91bb8eef15ab6a03a96ff323dd150694ab8eb3bb86c0c580" "ee1670225ebb4abfaef8a0fe1d4224e14fb2e94d05cbae544ac7cfb433e3ff85" "0b96409bc39262906837afe75155e94bc84819cead6e66a778fdd3833cee7435" "1a5bf8692b9aaa73a9a29bf8895546cfc06c0e064e4306f7f78a8f8437502322" "8ad210f0892474f68a5f152bbb7b514667e6f7edddcc52d2f7a3be41ea1edab9" "7e068da4ba88162324d9773ec066d93c447c76e9f4ae711ddd0c5d3863489c52" "2627707bc15dd427ef165fc8ff9868e3e184f6a151f139c092561bbc39734364" "1a1ac598737d0fcdc4dfab3af3d6f46ab2d5048b8e72bc22f50271fd6d393a00" default))
+    '("29a073e66535bad18e11e9bcaa17d7f2d17e4c79f01023e59e9841633915c232"
+       default))
  '(dired-dwim-target 'dired-dwim-target-next)
  '(doom-nord-brighter-modeline t t)
  '(doom-nord-padded-modeline t t)
- '(elfeed-feeds
-    '("http://www.reddit.com/.rss" "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" "http://www.austinist.com/index.rdf" "http://brandonsanderson.com/feed/" "http://www.cerealously.net/feed/" "http://xkcd.com/atom.xml" "http://blog.roku.com/feed/" "http://theshot.coffeeratings.com/feed/" "http://feeds.feedburner.com/SamHarris" "http://usesthis.com/feed/" "http://www.marco.org/rss" "http://www.macsparky.com/blog/rss.xml" "http://feeds.feedburner.com/shawnblanc" "http://daringfireball.net/index.xml" "http://www.macrumors.com/macrumors.xml" "http://www.burntorangenation.com/rss2/index.xml" "http://feeds.feedburner.com/sportsblogs/barkingcarnival" "http://thebuddhistblog.blogspot.com/feeds/posts/default" "http://www.financialsamurai.com/feed/" "http://endlessparentheses.com/atom.xml" "http://emacsredux.com/atom.xml" "http://pragmaticemacs.com/feed/" "http://baha-news.blogspot.com/feeds/posts/default" "http://feeds.feedburner.com/EBNosh" "http://eastbaydish.com/?feed=rss2" "http://hoodline.com/atom"))
+ '(ediff-window-setup-function 'ediff-setup-windows-plain)
  '(eshell-prompt-function
     #[0 "\300\301 !\302 \303U\203\17\0\304\202\20\0\305P\207"
-       [abbreviate-file-name eshell/pwd user-uid 0 " # " " λ "]
-       3])
+       [abbreviate-file-name eshell/pwd user-uid 0 " # " " λ "] 3])
  '(eshell-prompt-regexp "^[^#$\12]* [#$λ] ")
+ '(graphviz-dot-preview-extension "png")
+ '(ispell-program-name "aspell")
+ '(list-matching-lines-default-context-lines 1)
+ '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
  '(markdown-css-paths
     '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css"))
+ '(mouse-wheel-progressive-speed nil)
  '(org-preview-html-viewer 'xwidget)
  '(org-safe-remote-resources
     '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-    '(envrc elfeed-web devdocs eat cheat-sh ox-gfm consult htmlize ob-typescript diminish add-node-modules-path editorconfig flycheck elfeed corfu restclient project ef-themes deft mastodon sqlite3 sqlite marginalia forge modus-themes org-preview-html project-tab-groups which-key catppuccin-theme doom-themes vterm git-timemachine web-mode vertico use-package spinner prettier-js orderless multiple-cursors markdown-mode magit lv ht f exec-path-from-shell))
+    '(ace-window add-node-modules-path catppuccin-theme cheat-sh consult
+       corfu deft devdocs diminish doom-themes eat editorconfig
+       ef-themes eglot elfeed elfeed-web embark envrc esup
+       exec-path-from-shell f flycheck forge git-timemachine
+       graphviz-dot-mode ht htmlize lv magit marginalia markdown-mode
+       mastodon modus-themes multiple-cursors ob-typescript orderless
+       org-preview-html ox-gfm prettier-js project project-tab-groups
+       projectile restclient solaire-mode spacious-padding spinner
+       sqlite sqlite3 ultra-scroll use-package vertico vterm web-mode
+       which-key zenburn-theme))
+ '(package-vc-selected-packages
+    '((ultra-scroll :vc-backend Git :url
+        "https://github.com/jdtsmith/ultra-scroll")))
+ '(spacious-padding-mode t)
+ '(spacious-padding-widths
+    '(:internal-border-width 8 :header-line-width 4 :mode-line-width 6
+       :tab-width 4 :right-divider-width 8 :scroll-bar-width 8
+       :fringe-width 8))
  '(web-mode-comment-formats
-    '(("java" . "/*")
-       ("javascript" . "//")
-       ("typescript" . "//")
-       ("php" . "/*")
-       ("css" . "/*"))))
+    '(("java" . "/*") ("javascript" . "//") ("typescript" . "//")
+       ("php" . "/*") ("css" . "/*"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(fringe ((t :background "White")))
+ '(header-line ((t :box (:line-width 4 :color "grey90" :style nil))))
+ '(header-line-highlight ((t :box (:color "Black"))))
+ '(keycast-key ((t)))
+ '(line-number ((t :background "White")))
+ '(mode-line ((t :box (:line-width 6 :color "grey75" :style nil))))
+ '(mode-line-active ((t :box (:line-width 6 :color "grey75" :style nil))))
+ '(mode-line-highlight ((t :box (:color "Black"))))
+ '(mode-line-inactive ((t :box (:line-width 6 :color "grey90" :style nil))))
+ '(tab-bar-tab ((t :box (:line-width 4 :color "grey85" :style nil))))
+ '(tab-bar-tab-inactive ((t :box (:line-width 4 :color "grey75" :style nil))))
+ '(tab-line-tab ((t)))
+ '(tab-line-tab-active ((t)))
+ '(tab-line-tab-inactive ((t)))
+ '(variable-pitch ((t (:family "San Francisco"))))
+ '(vertical-border ((t :background "White" :foreground "White")))
+ '(window-divider ((t (:background "White" :foreground "White"))))
+ '(window-divider-first-pixel ((t (:background "White" :foreground "White"))))
+ '(window-divider-last-pixel ((t (:background "White" :foreground "White")))))
 
 (defun efs/display-startup-time ()
   (message
@@ -527,20 +549,6 @@
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
-(defun drl/project-vterm ()
-  "Start an inferior shell in the current project's root directory.
-If a buffer already exists for running a shell in the project's root,
-switch to it.  Otherwise, create a new shell buffer.
-With \\[universal-argument] prefix arg, create a new inferior shell buffer even
-if one already exists."
-  (interactive)
-  (let* ((default-directory (project-root (project-current t)))
-         (default-project-shell-name (project-prefixed-buffer-name "shell"))
-         (shell-buffer (get-buffer default-project-shell-name)))
-    (if (and shell-buffer (not current-prefix-arg))
-        (pop-to-buffer-same-window shell-buffer)
-      (vterm (generate-new-buffer-name default-project-shell-name)))))
-
 
 (defun drl/markdown-live-preview-window-xwidget-webkit (file)
   "Preview FILE with xwidget-webkit.
@@ -548,7 +556,6 @@ To be used with `markdown-live-preview-window-function'."
   (let ((uri (format "file://%s" file)))
     (xwidget-webkit-browse-url uri)
     xwidget-webkit-last-session-buffer))
-
 
 (use-package markdown-mode
   :ensure t
@@ -570,7 +577,7 @@ To be used with `markdown-live-preview-window-function'."
           (border-mode-line-inactive unspecified)))
 
   ;; Load the theme of your choice.
-  (load-theme 'ef-maris-light))
+  (load-theme 'ef-owl))
 
 (use-package marginalia
   :ensure t
@@ -582,8 +589,28 @@ To be used with `markdown-live-preview-window-function'."
 (defun project-magit-status ()
   "Run VC-Dir in the current project's root."
   (interactive)
-  (magit-status (project-root (project-current t))))
+  (magit-status-setup-buffer (project-root (project-current t))))
 
 
-(eval-after-load 'typescript-ts-mode
-  '(add-hook 'typescript-ts-mode-hook #'add-node-modules-path))
+(defun my/log-thing-at-point ()
+  "Adds a console.log statement after the current line for the thing at point"
+  (interactive)
+  (save-excursion
+    (let* ((loggable-node (combobulate-node-at-point '("member_expression" "identifier")))
+	   (loggable-string (buffer-substring (combobulate-node-start loggable-node) (combobulate-node-end loggable-node))))
+      (end-of-line)
+	    (newline-and-indent)
+	    (insert "console.log(\"" loggable-string "\", " loggable-string ");"))))
+
+(use-package combobulate
+   :custom
+   ;; You can customize Combobulate's key prefix here.
+   ;; Note that you may have to restart Emacs for this to take effect!
+   (combobulate-key-prefix "C-c o")
+   :hook ((prog-mode . combobulate-mode))
+   ;; Amend this to the directory where you keep Combobulate's source
+   ;; code.
+  :load-path ("vendor/combobulate"))
+
+
+(load (expand-file-name (concat user-emacs-directory "indeed.el")))

@@ -25,3 +25,14 @@
 ;; Whitespace
 (setq whitespace-line-column 120)
 (setq whitespace-style '(face tabs trailing lines-tail))
+
+
+;; Magit Forge
+(use-package forge
+  :ensure t
+  :config
+  (push '("code.corp.indeed.com"               ; GITHOST
+          "code.corp.indeed.com/api/v4"        ; APIHOST
+          "code.corp.indeed.com"               ; WEBHOST and INSTANCE-ID
+          forge-gitlab-repository)    ; CLASS
+	forge-alist))
