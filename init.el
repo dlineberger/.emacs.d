@@ -5,6 +5,8 @@
 ;;; Commentary:
 ;;; Code:
 
+(setq use-package-compute-statistics t)
+
 ;; Standard Emacs settings
 (use-package emacs
   :custom
@@ -28,24 +30,17 @@
 
 (if (display-graphic-p)
     (progn
-      (setq initial-frame-alist
-	    (append initial-frame-alist
-		    '((left . 100 )
-                      (top . 100)
-                      (width . 140)
-                      (height . 80))))
       (scroll-bar-mode -1)        ; Disable visible scrollbar
       (tool-bar-mode -1)          ; Disable the toolbar
       (menu-bar-mode 1)
       (pixel-scroll-precision-mode 1)
       (set-fringe-mode '(10 . 0)) ; Give some breathing room
-      (set-frame-parameter nil 'alpha-background 70)
-      (add-to-list 'default-frame-alist '(alpha-background . 70))
       (set-face-attribute 'default nil :font "JetBrains Mono" :weight 'thin)
       (set-face-attribute 'mode-line nil :font "SF Pro")
-      (set-face-attribute 'minibuffer-prompt nil :font "SF Pro"))
+      (set-face-attribute 'minibuffer-prompt nil :font "SF Pro")
+            (load-theme 'ef-owl t)
+      )
   (progn
-    (load-theme 'ef-owl t)
     (menu-bar-mode -1)))
 
 ;; Workaround a tramp-MacOS bug that dramatically slows completion
@@ -59,10 +54,14 @@
 
 (use-package devdocs
   :ensure t
-  :config
-  (setq devdocs-site-url "http://localhost:9292")
-  (setq devdocs-cdn-url "http://localhost:9292/docs")
+  :custom ((devdocs-site-url "http://localhost:9292")
+            (devdocs-cdn-url "http://localhost:9292/docs"))
   :bind (("C-h D" . devdocs-lookup)))
+
+(use-package spacious-padding
+  :custom ((spacious-padding-subtle-mode-line t))
+  :init
+  (spacious-padding-mode 1))
 
 
 (use-package esh-mode
@@ -77,8 +76,9 @@
 
 (use-package eshell
   :ensure nil
+  :commands eshell
   :custom
-  (eshell-scroll-to-bottom-on-input 'this))
+  ((eshell-scroll-to-bottom-on-input 'this)))
 
 (use-package eat
   :ensure t
@@ -93,8 +93,7 @@
 
 (use-package recentf
   :ensure nil
-  :config
-  (recentf-mode 1))
+  :hook (after-init . recentf-mode))
 
 (use-package which-key
   :init (which-key-mode)
@@ -118,20 +117,21 @@
 
 (use-package eww
   :ensure nil
-  :config
-  (setq eww-auto-rename-buffer "title"))
+  :commands eww
+  :custom ((eww-auto-rename-buffer "title")))
 
 (use-package dired
-  :config
-  (setq insert-directory-program "/opt/homebrew/bin/gls")
-  (setq dired-use-ls-dired t)
-  (setq dired-listing-switches "-alh --group-directories-first --time-style=long-iso"))
+  :commands dired
+  :custom
+  (insert-directory-program "/opt/homebrew/bin/gls")
+  (dired-use-ls-dired t)
+  (dired-listing-switches "-alh --group-directories-first --time-style=long-iso"))
 
 (use-package editorconfig
   :ensure t
   :diminish editorconfig-mode
-  :config
-  (editorconfig-mode 1))
+  :hook (prog-mode))
+
 
 (use-package treesit
   :mode (("\\.tsx\\'" . tsx-ts-mode)
@@ -216,9 +216,9 @@
 ;;               ("M-p" . flycheck-previous-error)))
 
 (use-package re-builder
-  :config
-  (setq reb-re-syntax 'string)
-  )
+  :commands re-builder
+  :custom
+  (reb-re-syntax 'string))
 
 ;; VTerm for fast terminal sessions
 (use-package vterm
@@ -416,9 +416,17 @@ if one already exists."
   :bind
   ("C-c c" . org-capture))
 
-(use-package org-tempo)
-(use-package ox-md)
-(use-package ox-gfm)
+;; org-tempo provides src templates
+(use-package org-tempo
+  :hook org-mode)
+
+;; Markdown support for org export
+(use-package ox-md
+  :after org-mode)
+
+;; GitHub-flavored Markdown suppport for org export
+;; (use-package ox-gfm
+;;   :after org-mode)
 
 (defun find-default-notes-file ()
   (interactive)
@@ -437,6 +445,7 @@ if one already exists."
 
 (use-package elfeed
   :ensure t
+  :commands elfeed
   :custom
   (elfeed-feeds
     '(
@@ -505,38 +514,9 @@ if one already exists."
  '(package-vc-selected-packages
     '((ultra-scroll :vc-backend Git :url
         "https://github.com/jdtsmith/ultra-scroll")))
- '(spacious-padding-mode t)
- '(spacious-padding-widths
-    '(:internal-border-width 8 :header-line-width 4 :mode-line-width 6
-       :tab-width 4 :right-divider-width 8 :scroll-bar-width 8
-       :fringe-width 8))
  '(web-mode-comment-formats
     '(("java" . "/*") ("javascript" . "//") ("typescript" . "//")
        ("php" . "/*") ("css" . "/*"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(fringe ((t :background "White")))
- '(header-line ((t :box (:line-width 4 :color "grey90" :style nil))))
- '(header-line-highlight ((t :box (:color "Black"))))
- '(keycast-key ((t)))
- '(line-number ((t :background "White")))
- '(mode-line ((t :box (:line-width 6 :color "grey75" :style nil))))
- '(mode-line-active ((t :box (:line-width 6 :color "grey75" :style nil))))
- '(mode-line-highlight ((t :box (:color "Black"))))
- '(mode-line-inactive ((t :box (:line-width 6 :color "grey90" :style nil))))
- '(tab-bar-tab ((t :box (:line-width 4 :color "grey85" :style nil))))
- '(tab-bar-tab-inactive ((t :box (:line-width 4 :color "grey75" :style nil))))
- '(tab-line-tab ((t)))
- '(tab-line-tab-active ((t)))
- '(tab-line-tab-inactive ((t)))
- '(variable-pitch ((t (:family "San Francisco"))))
- '(vertical-border ((t :background "White" :foreground "White")))
- '(window-divider ((t (:background "White" :foreground "White"))))
- '(window-divider-first-pixel ((t (:background "White" :foreground "White"))))
- '(window-divider-last-pixel ((t (:background "White" :foreground "White")))))
 
 (defun efs/display-startup-time ()
   (message
@@ -559,25 +539,23 @@ To be used with `markdown-live-preview-window-function'."
 
 (use-package markdown-mode
   :ensure t
-  :config
-  (setq markdown-live-preview-window-function
-	'drl/markdown-live-preview-window-xwidget-webkit)
-  )
+  :mode "\\.md\\'"
+  :custom ((markdown-live-preview-window-function 'drl/markdown-live-preview-window-xwidget-webkit)))
 
-(use-package modus-themes
-  :ensure t
-  :config
-  ;; Add all your customizations prior to loading the themes
-  (setq modus-themes-italic-constructs t
-        modus-themes-bold-constructs nil)
+;; (use-package modus-themes
+;;   :ensure t
+;;   :config
+;;   ;; Add all your customizations prior to loading the themes
+;;   (setq modus-themes-italic-constructs t
+;;         modus-themes-bold-constructs nil)
 
-  ;; Maybe define some palette overrides, such as by using our presets
-  (setq modus-themes-common-palette-overrides
-	'((border-mode-line-active unspecified)
-          (border-mode-line-inactive unspecified)))
+;;   ;; Maybe define some palette overrides, such as by using our presets
+;;   (setq modus-themes-common-palette-overrides
+;; 	'((border-mode-line-active unspecified)
+;;           (border-mode-line-inactive unspecified)))
 
-  ;; Load the theme of your choice.
-  (load-theme 'ef-owl))
+;;   ;; Load the theme of your choice.
+;;   (load-theme 'ef-owl))
 
 (use-package marginalia
   :ensure t

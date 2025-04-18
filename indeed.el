@@ -30,6 +30,7 @@
 ;; Magit Forge
 (use-package forge
   :ensure t
+  :after magit
   :config
   (push '("code.corp.indeed.com"               ; GITHOST
           "code.corp.indeed.com/api/v4"        ; APIHOST
