@@ -63,7 +63,6 @@
   :init
   (spacious-padding-mode 1))
 
-
 (use-package esh-mode
   :ensure nil
   :config
@@ -282,23 +281,14 @@ if one already exists."
     (if (and vterm-buffer (not current-prefix-arg))
 	(pop-to-buffer vterm-buffer (bound-and-true-p display-comint-buffer-action))
       (vterm))))
-  :init
-  (setq project-switch-commands 'project-magit-status)
+  :custom
+  (project-switch-commands 'project-magit-status)
   :bind-keymap
   ("C-c p" . project-prefix-map)
+  ("s-p" . project-prefix-map)
   :bind (:map project-prefix-map
           ("h" . project-find-file)
           ("t" . my/project-vterm)))
-
-;; (use-package projectile
-;;   :ensure t
-;;   :init
-;;   (projectile-mode +1)
-;;   (setq projectile-project-search-path '("~/indeed/"))
-;;   (setq projectile-switch-project-action 'project-magit-status)
-;;   :bind (:map projectile-mode-map
-;;               ("s-p" . projectile-command-map)
-;;               ("C-c p" . projectile-command-map)))
 
 (use-package shell
   :ensure nil
@@ -418,7 +408,7 @@ if one already exists."
 
 ;; org-tempo provides src templates
 (use-package org-tempo
-  :hook org-mode)
+  :after org-mode)
 
 ;; Markdown support for org export
 (use-package ox-md
@@ -542,27 +532,12 @@ To be used with `markdown-live-preview-window-function'."
   :mode "\\.md\\'"
   :custom ((markdown-live-preview-window-function 'drl/markdown-live-preview-window-xwidget-webkit)))
 
-;; (use-package modus-themes
-;;   :ensure t
-;;   :config
-;;   ;; Add all your customizations prior to loading the themes
-;;   (setq modus-themes-italic-constructs t
-;;         modus-themes-bold-constructs nil)
-
-;;   ;; Maybe define some palette overrides, such as by using our presets
-;;   (setq modus-themes-common-palette-overrides
-;; 	'((border-mode-line-active unspecified)
-;;           (border-mode-line-inactive unspecified)))
-
-;;   ;; Load the theme of your choice.
-;;   (load-theme 'ef-owl))
-
 (use-package marginalia
   :ensure t
   :config
   (marginalia-mode))
-(put 'dired-find-alternate-file 'disabled nil)
 
+(put 'dired-find-alternate-file 'disabled nil)
 
 (defun project-magit-status ()
   "Run VC-Dir in the current project's root."
