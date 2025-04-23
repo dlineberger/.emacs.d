@@ -27,3 +27,4 @@ site-lisp/package/
 projectile-bookmarks.eld
 jabber-avatar-cache/
 .graphene-geometry
+/.cache/

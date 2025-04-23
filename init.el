@@ -19,6 +19,7 @@
   (delete-selection-mode 1)   ; Act like a normal editor
   (savehist-mode 1)
   (lock-file-mode -1)
+  (global-completion-preview-mode 1)
   (mouse-wheel-mode nil)
   (grep-command "rg"))
 
@@ -36,9 +37,7 @@
       (pixel-scroll-precision-mode 1)
       (set-fringe-mode '(10 . 0)) ; Give some breathing room
       (set-face-attribute 'default nil :font "JetBrains Mono" :weight 'thin)
-      (set-face-attribute 'mode-line nil :font "SF Pro")
-      (set-face-attribute 'minibuffer-prompt nil :font "SF Pro")
-            (load-theme 'ef-owl t)
+      (set-face-attribute 'variable-pitch nil :font "SF Pro")
       )
   (progn
     (menu-bar-mode -1)))
@@ -51,6 +50,12 @@
                          ("org" . "https://orgmode.org/elpa/")
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(use-package ef-themes
+  :custom
+  (ef-themes-variable-pitch-ui t)
+  :config
+  (load-theme 'ef-owl t))
 
 (use-package devdocs
   :ensure t
@@ -96,6 +101,7 @@
 
 (use-package which-key
   :init (which-key-mode)
+  :diminish which-key-mode
   :ensure t)
 
 (use-package display-line-numbers
@@ -267,6 +273,9 @@
 
 ;;Project management
 (use-package project
+  :custom
+  (project-mode-line t)
+  (project-file-history-behavior 'relativize)
   :config
   (defun my/project-vterm ()
   "Start vterm in the current project's root directory.
@@ -281,8 +290,13 @@ if one already exists."
     (if (and vterm-buffer (not current-prefix-arg))
 	(pop-to-buffer vterm-buffer (bound-and-true-p display-comint-buffer-action))
       (vterm))))
+
+  (defun my/project-magit-status ()
+  "Run VC-Dir in the current project's root."
+  (interactive)
+  (magit-status-setup-buffer (project-root (project-current t))))
   :custom
-  (project-switch-commands 'project-magit-status)
+  (project-switch-commands 'my/project-magit-status)
   :bind-keymap
   ("C-c p" . project-prefix-map)
   ("s-p" . project-prefix-map)
@@ -318,40 +332,40 @@ if one already exists."
   (setq completion-styles '(orderless basic))
   (setq orderless-matching-styles '(orderless-literal orderless-regexp)))
 
-(use-package corfu
-  :ensure t
-  ;; Optional customizations
-  :custom
-  (corfu-cycle t)                 ; Allows cycling through candidates
-  (corfu-auto t)                  ; Enable auto completion
-  (corfu-auto-prefix 2)           ; Minimum length of prefix for completion
-  (corfu-auto-delay 0)            ; No delay for completion
-  (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
-  (corfu-preview-current 'insert) ; insert previewed candidate
-  (corfu-preselect 'prompt)
-  (corfu-on-exact-match nil)      ; Don't auto expand tempel snippets
-  ;; Optionally use TAB for cycling, default is `corfu-complete'.
-  :bind (:map corfu-map
-              ("M-SPC"      . corfu-insert-separator)
-              ("TAB"        . corfu-next)
-              ([tab]        . corfu-next)
-              ("S-TAB"      . corfu-previous)
-              ([backtab]    . corfu-previous)
-              ("S-<return>" . corfu-insert)
-              ("RET"        . corfu-insert))
+;; (use-package corfu
+;;   :ensure t
+;;   ;; Optional customizations
+;;   :custom
+;;   (corfu-cycle t)                 ; Allows cycling through candidates
+;;   (corfu-auto t)                  ; Enable auto completion
+;;   (corfu-auto-prefix 2)           ; Minimum length of prefix for completion
+;;   (corfu-auto-delay 0)            ; No delay for completion
+;;   (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
+;;   (corfu-preview-current 'insert) ; insert previewed candidate
+;;   (corfu-preselect 'prompt)
+;;   (corfu-on-exact-match nil)      ; Don't auto expand tempel snippets
+;;   ;; Optionally use TAB for cycling, default is `corfu-complete'.
+;;   :bind (:map corfu-map
+;;               ("M-SPC"      . corfu-insert-separator)
+;;               ("TAB"        . corfu-next)
+;;               ([tab]        . corfu-next)
+;;               ("S-TAB"      . corfu-previous)
+;;               ([backtab]    . corfu-previous)
+;;               ("S-<return>" . corfu-insert)
+;;               ("RET"        . corfu-insert))
 
-  :init
-  (global-corfu-mode)
-  (corfu-history-mode)
-  (corfu-popupinfo-mode) ; Popup completion info
-  :config
-  (add-hook 'eshell-mode-hook
-            (lambda () (setq-local corfu-quit-at-boundary t
-                                   corfu-quit-no-match t
-                                   corfu-auto nil)
-              (corfu-mode))
-            nil
-            t))
+;;   :init
+;;   (global-corfu-mode)
+;;   (corfu-history-mode)
+;;   (corfu-popupinfo-mode) ; Popup completion info
+;;   :config
+;;   (add-hook 'eshell-mode-hook
+;;             (lambda () (setq-local corfu-quit-at-boundary t
+;;                                    corfu-quit-no-match t
+;;                                    corfu-auto nil)
+;;               (corfu-mode))
+;;             nil
+;;             t))
 
 ;; Git Interface
 (use-package magit
@@ -365,11 +379,14 @@ if one already exists."
 
 ;; Note: Make sure to install prettier via npm
 (use-package prettier-js
+  :ensure-system-package (prettier . "npm i -g prettier")
   :ensure t
   :hook (typescript-ts-base-mode . prettier-js-mode))
 
 (use-package org
   :ensure t
+  :custom
+  (org-export-backends '(html md))
   :init
   (setq org-directory "~/Sync/org")
   (setq org-agenda-files '("~/Sync/org/indeed/journal/current.org"))
@@ -387,7 +404,7 @@ if one already exists."
   (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil))) 
   :bind
   (("C-c t" . find-default-notes-file)
-   ("C-c a" . org-agenda)))
+    ("C-c a" . org-agenda)))
 
 (use-package visual-line
   :ensure nil
@@ -408,10 +425,6 @@ if one already exists."
 
 ;; org-tempo provides src templates
 (use-package org-tempo
-  :after org-mode)
-
-;; Markdown support for org export
-(use-package ox-md
   :after org-mode)
 
 ;; GitHub-flavored Markdown suppport for org export
@@ -470,7 +483,8 @@ if one already exists."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-    '("29a073e66535bad18e11e9bcaa17d7f2d17e4c79f01023e59e9841633915c232"
+    '("f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7"
+       "29a073e66535bad18e11e9bcaa17d7f2d17e4c79f01023e59e9841633915c232"
        default))
  '(dired-dwim-target 'dired-dwim-target-next)
  '(doom-nord-brighter-modeline t t)
@@ -539,10 +553,6 @@ To be used with `markdown-live-preview-window-function'."
 
 (put 'dired-find-alternate-file 'disabled nil)
 
-(defun project-magit-status ()
-  "Run VC-Dir in the current project's root."
-  (interactive)
-  (magit-status-setup-buffer (project-root (project-current t))))
 
 
 (defun my/log-thing-at-point ()
@@ -567,3 +577,27 @@ To be used with `markdown-live-preview-window-function'."
 
 
 (load (expand-file-name (concat user-emacs-directory "indeed.el")))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(fringe ((t :background "#292c2f")))
+ '(header-line ((t :box (:line-width 4 :color "#373b3d" :style nil))))
+ '(header-line-highlight ((t :box (:color "#d0d0d0"))))
+ '(keycast-key ((t)))
+ '(line-number ((t :background "#292c2f")))
+ '(mode-line ((t :background "#292c2f" :overline "#dadfe5" :box (:line-width 6 :color "#292c2f" :style nil))))
+ '(mode-line-active ((t :background "#292c2f" :overline "#dadfe5" :box (:line-width 6 :color "#292c2f" :style nil))))
+ '(mode-line-highlight ((t :box (:color "#d0d0d0"))))
+ '(mode-line-inactive ((t :background "#292c2f" :overline "#857f8f" :box (:line-width 6 :color "#292c2f" :style nil))))
+ '(tab-bar-tab ((t :box (:line-width 4 :color "#292c2f" :style nil))))
+ '(tab-bar-tab-inactive ((t :box (:line-width 4 :color "#60676b" :style nil))))
+ '(tab-line-tab ((t)))
+ '(tab-line-tab-active ((t)))
+ '(tab-line-tab-inactive ((t)))
+ '(vertical-border ((t :background "#292c2f" :foreground "#292c2f")))
+ '(window-divider ((t (:background "#292c2f" :foreground "#292c2f"))))
+ '(window-divider-first-pixel ((t (:background "#292c2f" :foreground "#292c2f"))))
+ '(window-divider-last-pixel ((t (:background "#292c2f" :foreground "#292c2f")))))
+
