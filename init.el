@@ -21,6 +21,7 @@
   (lock-file-mode -1)
   (global-completion-preview-mode 1)
   (mouse-wheel-mode nil)
+  (manual-program "gman")
   (grep-command "rg"))
 
 ;; For opening huge files
@@ -46,7 +47,7 @@
 (put 'temporary-file-directory 'standard-value
      (list temporary-file-directory))
 
-(setq package-archives '(("melpa-stable" . "https://stable.melpa.org/packages/")
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -108,9 +109,9 @@
   :ensure nil
   :hook (prog-mode))
 
-(use-package electric-pair
+(use-package elec-pair
   :ensure nil
-  :hook (prog-mode))
+  :hook (prog-mode . electric-pair-mode))
 
 (use-package subword
   :ensure nil
@@ -402,13 +403,10 @@ if one already exists."
   (setq org-html-postamble nil)
   (setq org-export-with-section-numbers t)
   (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil))) 
+  :config (add-hook 'org-mode-hook 'visual-line-mode)
   :bind
   (("C-c t" . find-default-notes-file)
     ("C-c a" . org-agenda)))
-
-(use-package visual-line
-  :ensure nil
-  :hook (org-mode))
 
 (use-package org-capture
   :init
@@ -483,44 +481,35 @@ if one already exists."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-    '("f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7"
-       "29a073e66535bad18e11e9bcaa17d7f2d17e4c79f01023e59e9841633915c232"
-       default))
+   '("4f03e70554a58349740973c69e73aefd8ce761a77b22a9dc52a19e708532084a"
+     "29a073e66535bad18e11e9bcaa17d7f2d17e4c79f01023e59e9841633915c232"
+     default))
  '(dired-dwim-target 'dired-dwim-target-next)
  '(doom-nord-brighter-modeline t t)
  '(doom-nord-padded-modeline t t)
  '(ediff-window-setup-function 'ediff-setup-windows-plain)
  '(eshell-prompt-function
-    #[0 "\300\301 !\302 \303U\203\17\0\304\202\20\0\305P\207"
+   #[0 "\300\301 !\302 \303U\203\17\0\304\202\20\0\305P\207"
        [abbreviate-file-name eshell/pwd user-uid 0 " # " " λ "] 3])
  '(eshell-prompt-regexp "^[^#$\12]* [#$λ] ")
  '(graphviz-dot-preview-extension "png")
  '(ispell-program-name "aspell")
  '(list-matching-lines-default-context-lines 1)
- '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+ '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1 t)
  '(markdown-css-paths
-    '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css"))
+   '("https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css"))
  '(mouse-wheel-progressive-speed nil)
  '(org-preview-html-viewer 'xwidget)
  '(org-safe-remote-resources
-    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
- '(package-selected-packages
-    '(ace-window add-node-modules-path catppuccin-theme cheat-sh consult
-       corfu deft devdocs diminish doom-themes eat editorconfig
-       ef-themes eglot elfeed elfeed-web embark envrc esup
-       exec-path-from-shell f flycheck forge git-timemachine
-       graphviz-dot-mode ht htmlize lv magit marginalia markdown-mode
-       mastodon modus-themes multiple-cursors ob-typescript orderless
-       org-preview-html ox-gfm prettier-js project project-tab-groups
-       projectile restclient solaire-mode spacious-padding spinner
-       sqlite sqlite3 ultra-scroll use-package vertico vterm web-mode
-       which-key zenburn-theme))
+   '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
+ '(package-selected-packages nil)
  '(package-vc-selected-packages
-    '((ultra-scroll :vc-backend Git :url
-        "https://github.com/jdtsmith/ultra-scroll")))
+   '((ultra-scroll :vc-backend Git :url
+		   "https://github.com/jdtsmith/ultra-scroll")))
+ '(warning-suppress-types '((eglot)))
  '(web-mode-comment-formats
-    '(("java" . "/*") ("javascript" . "//") ("typescript" . "//")
-       ("php" . "/*") ("css" . "/*"))))
+   '(("java" . "/*") ("javascript" . "//") ("typescript" . "//")
+     ("php" . "/*") ("css" . "/*"))))
 
 (defun efs/display-startup-time ()
   (message
@@ -576,28 +565,7 @@ To be used with `markdown-live-preview-window-function'."
   :load-path ("vendor/combobulate"))
 
 
-(load (expand-file-name (concat user-emacs-directory "indeed.el")))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(fringe ((t :background "#292c2f")))
- '(header-line ((t :box (:line-width 4 :color "#373b3d" :style nil))))
- '(header-line-highlight ((t :box (:color "#d0d0d0"))))
- '(keycast-key ((t)))
- '(line-number ((t :background "#292c2f")))
- '(mode-line ((t :background "#292c2f" :overline "#dadfe5" :box (:line-width 6 :color "#292c2f" :style nil))))
- '(mode-line-active ((t :background "#292c2f" :overline "#dadfe5" :box (:line-width 6 :color "#292c2f" :style nil))))
- '(mode-line-highlight ((t :box (:color "#d0d0d0"))))
- '(mode-line-inactive ((t :background "#292c2f" :overline "#857f8f" :box (:line-width 6 :color "#292c2f" :style nil))))
- '(tab-bar-tab ((t :box (:line-width 4 :color "#292c2f" :style nil))))
- '(tab-bar-tab-inactive ((t :box (:line-width 4 :color "#60676b" :style nil))))
- '(tab-line-tab ((t)))
- '(tab-line-tab-active ((t)))
- '(tab-line-tab-inactive ((t)))
- '(vertical-border ((t :background "#292c2f" :foreground "#292c2f")))
- '(window-divider ((t (:background "#292c2f" :foreground "#292c2f"))))
- '(window-divider-first-pixel ((t (:background "#292c2f" :foreground "#292c2f"))))
- '(window-divider-last-pixel ((t (:background "#292c2f" :foreground "#292c2f")))))
-
+;; Load system-specific file if it exists
+(let ((system-init-file (expand-file-name (concat user-emacs-directory (system-name) ".el"))))
+  (if (file-exists-p system-init-file)
+      (load system-init-file)))
